@@ -462,65 +462,131 @@ VALUES (8, 4, 'cash', NULL, NULL, NULL, to_date('2022-09-14','YYYY-MM-DD'), NULL
 
 
 truncate table order_product;
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (1, 5, 8, 10);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (1, 5, 3, 8, 10);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (2, 2, 3, 5);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (2, 2, 4,  3, 5);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (3, 7, 9, 2);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (3, 7, 2, 9, 2);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (4, 11, 5, 1);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (4, 11, 1, 5, 1);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (5, 9, 2, 8);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (5, 9, 3, 2, 8);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (6, 6, 1, 3);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (6, 6, 5, 1, 3);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (7, 1, 6, 6);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (7, 1, 5, 6, 6);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (8, 10, 7, 12);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (8, 10, 7, 7, 12);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (9, 12, 10, 4);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (9, 12, 8, 10, 4);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (10, 4, 4, 7);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (10, 4, 2, 4, 7);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (11, 8, 12, 2);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (11, 8, 1, 12, 2);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (12, 3, 11, 9);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (12, 3, 6, 11, 9);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (13, 13, 1, 1);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (13, 13, 4, 1, 1);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (14, 1, 5, 3);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (14, 1, 2, 5, 3);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (15, 2, 8, 6);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (15, 2, 1, 8, 6);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (16, 7, 2, 8);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (16, 7, 8, 2, 8);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (17, 11, 10, 5);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (17, 11, 6, 10, 5);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (18, 9, 7, 2);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (18, 9, 1, 7, 2);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (19, 6, 3, 11);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (19, 6, 4, 3, 11);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (20, 4, 12, 3);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (20, 4, 2, 12, 3);
 
- commit;
+COMMIT;
  
+
+
+CREATE OR REPLACE VIEW CUSTOMER_VIEW AS
+SELECT customer_id, first_name || ' ' || last_name AS customer_name, customer_type
+FROM customer;
+COMMIT;
+
+CREATE OR REPLACE VIEW PRODUCT_COLOR_VIEW AS
+SELECT product_name, color
+FROM product;
+COMMIT;
+
+
+CREATE OR REPLACE VIEW PRODUCT_VIEW AS
+SELECT p.review_id, p.product_name, r.review_desc,
+  LISTAGG(r.quality_rating, ';') WITHIN GROUP (ORDER BY r.quality_rating) AS product_rating
+FROM REVIEWS r
+JOIN PRODUCT p
+  ON r.review_id = p.review_id
+GROUP BY p.review_id, p.product_name, r.review_desc
+ORDER BY p.review_id;
+COMMIT;
+
+CREATE OR REPLACE VIEW CUSTOMER_ORDER_HISTORY AS
+SELECT c.customer_id, c.first_name || ' ' || c.last_name AS customer_name, p.product_name, pay.order_date, SUM(o.quantity) as quantity, SUM(pay.amount_paid) as amount_paid
+FROM Customer c
+JOIN Payment pay ON c.customer_id = pay.customer_id
+JOIN order_product o ON pay.payment_id = o.payment_id
+JOIN Product p ON o.product_id = p.product_id
+GROUP BY c.customer_id, c.first_name, c.last_name, p.product_name, pay.order_date
+ORDER BY c.customer_id;
+
+COMMIT;
+
+CREATE OR REPLACE VIEW EMPLOYEE_SALES_VIEW AS
+SELECT e.employee_id, e.employee_name, TRUNC(p.order_date, 'IW') as week, SUM(op.quantity * p.amount_paid) as weekly_sales
+FROM order_product op
+JOIN payment p ON op.payment_id = p.payment_id
+JOIN employee e ON op.employee_id = e.employee_id
+GROUP BY e.employee_id, e.employee_name, TRUNC(p.order_date, 'IW')
+HAVING SUM(op.quantity * p.amount_paid) > 10;
+COMMIT;
+
+CREATE OR REPLACE VIEW REVENUE_BY_PAYMENT_MODE AS
+SELECT payment_mode, SUM(amount_paid) AS total_revenue
+FROM payment
+GROUP BY payment_mode;
+COMMIT;
+
+CREATE OR REPLACE VIEW EMPLOYEE_CUSTOMER_COUNT_VIEW AS
+SELECT e.employee_id, e.designation, COUNT(*) as customer_count
+FROM employee e
+JOIN customer c ON e.employee_id = c.customer_id
+GROUP BY e.employee_id, e.designation
+ORDER BY customer_count DESC;
+COMMIT;
+
+CREATE OR REPLACE VIEW EMPLOYEE_SALARY_VIEW AS
+SELECT designation, employee_name, salary
+FROM employee
+ORDER BY designation, employee_name;
+COMMIT;
+
+
+
+
