@@ -167,5 +167,360 @@ CONSTRAINT fk_employee_id
 quantity number(5)
 );
 
+
+truncate table Zipcode;
+truncate table Customer;
+truncate table Supplier;
+truncate table product_group;
+truncate table Voucher;
+truncate table Employee;
+truncate table Reviews;
+truncate table Address;
+truncate table Product;
+truncate table Payment;
+truncate table order_product;
+
+--truncate table Zipcode;
+
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(1, 'California', 'Los Angeles', '90001');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(2, 'California', 'San Francisco', '94102');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(3, 'California', 'San Diego', '92101');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(4, 'New York', 'New York City', '10001');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(5, 'New York', 'Albany', '12201');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(6, 'New York', 'Buffalo', '14201');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(7, 'Texas', 'Houston', '77001');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(8, 'Texas', 'Dallas', '75201');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(9, 'Texas', 'Austin', '78701');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(10, 'Florida', 'Miami', '33101');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(11, 'Florida', 'Tampa', '33601');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(12, 'Florida', 'Orlando', '32801');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(13, 'Illinois', 'Chicago', '60601');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(14, 'Illinois', 'Springfield', '62701');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(15, 'Illinois', 'Peoria', '61601');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(16, 'Ohio', 'Columbus', '43201');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(17, 'Ohio', 'Cleveland', '44101');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(18, 'Ohio', 'Cincinnati', '45201');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(19, 'Washington', 'Seattle', '98101');
+INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(20, 'Washington', 'Spokane', '99201');
+
+
+truncate table customer;
+INSERT INTO Customer VALUES (1, 'John', 'Doe', 'johndoe@email.com', '1234567890', 'Student');
+INSERT INTO Customer VALUES (2, 'Jane', 'Smith', 'janesmith@email.com', '2345678901', 'Faculty');
+INSERT INTO Customer VALUES (3, 'David', 'Lee', 'davidlee@email.com', '3456789012', 'Student');
+INSERT INTO Customer VALUES (4, 'Sarah', 'Johnson', 'sarahjohnson@email.com', '4567890123', 'Faculty');
+INSERT INTO Customer VALUES (5, 'Michael', 'Brown', 'michaelbrown@email.com', '5678901234', 'Student');
+INSERT INTO Customer VALUES (6, 'Amy', 'Davis', 'amydavis@email.com', '6789012345', 'Faculty');
+INSERT INTO Customer VALUES (7, 'Peter', 'Nguyen', 'peternguyen@email.com', '7890123456', 'Student');
+INSERT INTO Customer VALUES (8, 'Melissa', 'Garcia', 'melissagarcia@email.com', '8901234567', 'Faculty');
+INSERT INTO Customer VALUES (9, 'Kevin', 'Jackson', 'kevinjackson@email.com', '9012345678', 'Student');
+INSERT INTO Customer VALUES (10, 'Emily', 'Kim', 'emilykim@email.com', '0123456789', 'Faculty');
+INSERT INTO Customer VALUES (11, 'Daniel', 'Wilson', 'danielwilson@email.com', '1234567890', 'Faculty');
+INSERT INTO Customer VALUES (12, 'Maria', 'Martinez', 'mariamartinez@email.com', '2345678901', 'Student');
+INSERT INTO Customer VALUES (13, 'Brian', 'Chen', 'brianchen@email.com', '3456789012', 'Faculty');
+INSERT INTO Customer VALUES (14, 'Cynthia', 'Lopez', 'cynthialopez@email.com', '4567890123', 'Student');
+INSERT INTO Customer VALUES (15, 'Thomas', 'Gonzalez', 'thomasgonzalez@email.com', '5678901234', 'Faculty');
+INSERT INTO Customer VALUES (16, 'Jennifer', 'Martin', 'jennifermartin@email.com', '6789012345', 'Student');
+INSERT INTO Customer VALUES (17, 'Steven', 'Lee', 'stevenlee@email.com', '7890123456', 'Faculty');
+INSERT INTO Customer VALUES (18, 'Jessica', 'Hernandez', 'jessicahernandez@email.com', '8901234567', 'Student');
+INSERT INTO Customer VALUES (19, 'Christopher', 'Gomez', 'christophergomez@email.com', '9012345678', 'Faculty');
+INSERT INTO Customer VALUES (20, 'Kimberly', 'Perez', 'kimberlyperez@email.com', '0123456789', 'Student');
+
+
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (1, 'ABC Inc.', 500);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (2, 'XYZ Corp.', 1000);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (3, 'PQR Enterprises', 750);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (4, 'LMN Corp.', 1500);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (5, 'DEF Industries', 800);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (6, 'GHI Manufacturing', 900);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (7, 'JKL Enterprises', 1200);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (8, 'MNO Inc.', 600);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (9, 'QRS Corp.', 1100);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (10, 'STU Industries', 850);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (11, 'VWX Inc.', 950);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (12, 'YZA Enterprises', 1300);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (13, 'BCD Corp.', 700);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (14, 'EFG Manufacturing', 1000);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (15, 'HIJ Industries', 1250);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (16, 'KLM Enterprises', 900);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (17, 'NOP Inc.', 650);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (18, 'QRT Corp.', 800);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (19, 'UVW Industries', 950);
+INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
+VALUES (20, 'XYZ Enterprises', 1100);
+
+
+
+INSERT INTO product_group (group_id, group_name)
+VALUES (1, 'Electronics');
+INSERT INTO product_group (group_id, group_name)
+VALUES (2, 'Home Appliances');
+INSERT INTO product_group (group_id, group_name)
+VALUES (3, 'Clothing');
+INSERT INTO product_group (group_id, group_name)
+VALUES (4, 'Books');
+INSERT INTO product_group (group_id, group_name)
+VALUES (5, 'Office Supplies');
+INSERT INTO product_group (group_id, group_name)
+VALUES (6, 'Toys');
+INSERT INTO product_group (group_id, group_name)
+VALUES (7, 'Sports and Fitness');
+INSERT INTO product_group (group_id, group_name)
+VALUES (8, 'Health and Beauty');
+INSERT INTO product_group (group_id, group_name)
+VALUES (9, 'Automotive');
+INSERT INTO product_group (group_id, group_name)
+VALUES (10, 'Pet Supplies');
+INSERT INTO product_group (group_id, group_name)
+VALUES (11, 'Jewelry');
+INSERT INTO product_group (group_id, group_name)
+VALUES (12, 'Furniture');
+INSERT INTO product_group (group_id, group_name)
+VALUES (13, 'Music');
+INSERT INTO product_group (group_id, group_name)
+VALUES (14, 'Movies');
+INSERT INTO product_group (group_id, group_name)
+VALUES (15, 'Food and Beverages');
+INSERT INTO product_group (group_id, group_name)
+VALUES (16, 'Baby and Kids');
+INSERT INTO product_group (group_id, group_name)
+VALUES (17, 'Outdoor and Garden');
+INSERT INTO product_group (group_id, group_name)
+VALUES (18, 'Tools and Hardware');
+INSERT INTO product_group (group_id, group_name)
+VALUES (19, 'Travel and Luggage');
+INSERT INTO product_group (group_id, group_name)
+VALUES (20, 'Gifts and Collectibles');
+
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (1, 'ABC123', 10);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (2, 'DEF456', 20);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (3, 'GHI789', 30);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (4, 'JKL012', 40);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (5, 'MNO345', 50);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (6, 'PQR678', 10);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (7, 'STU901', 20);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (8, 'VWX234', 30);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (9, 'YZA567', 40);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (10, 'BCD890', 50);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (11, 'EFG123', 10);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (12, 'HIJ456', 20);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (13, 'KLM789', 30);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (14, 'NOP012', 40);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (15, 'QRS345', 50);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (16, 'TUV678', 10);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (17, 'WXY901', 20);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (18, 'ZAB234', 30);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (19, 'CDE567', 40);
+INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (20, 'FGH890', 50);
+
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (1, 'John Doe', 'Manager', TO_DATE('2022-01-01', 'YYYY-MM-DD'), 10000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (2, 'Jane Smith', 'Manager', TO_DATE('2022-02-01', 'YYYY-MM-DD'), 8000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (3, 'David Lee',  'Manager', TO_DATE('2022-03-01', 'YYYY-MM-DD'), 7000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (4, 'Sarah Johnson', 'Sales', TO_DATE('2022-04-01', 'YYYY-MM-DD'), 6000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (5, 'Mike Brown', 'Sales', TO_DATE('2022-05-01', 'YYYY-MM-DD'), 5500);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (6, 'Emily Davis',  'Manager', TO_DATE('2022-06-01', 'YYYY-MM-DD'), 9000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (7, 'Kevin Kim',  'Sales', TO_DATE('2022-07-01', 'YYYY-MM-DD'), 5000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (8, 'Linda Wang',  'Manager', TO_DATE('2022-08-01', 'YYYY-MM-DD'), 8500);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (9, 'Robert Chen',  'Sales', TO_DATE('2022-09-01', 'YYYY-MM-DD'), 6000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (10, 'Amy Lee',  'Manager', TO_DATE('2022-10-01', 'YYYY-MM-DD'), 9500);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (11, 'Erica Nguyen', 'Sales', TO_DATE('2022-11-01', 'YYYY-MM-DD'), 6500);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (12, 'Chris Johnson', 'Manager', TO_DATE('2022-12-01', 'YYYY-MM-DD'), 10000);
+
+
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (1, 4, 2, 'Great product, works as advertised!', to_date('2022-01-05','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (2, 3, 5, 'Product had some minor defects but overall satisfied.', to_date('2022-02-10','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (3, 5, 0, 'Absolutely love this product! Best purchase ever.', to_date('2022-03-15','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (4, 2, 10, 'Product arrived damaged, disappointed with quality.', to_date('2022-04-20','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (5, 4, 3, 'Works well but had some minor issues with delivery.', to_date('2022-05-25','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (6, 5, 0, 'Incredible product, exceeded my expectations!', to_date('2022-06-30','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (7, 3, 5, 'Product had some defects but customer service was helpful in resolving the issue.', to_date('2022-07-05','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (8, 4, 2, 'Great product, would highly recommend to others.', to_date('2022-08-10','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (9, 2, 8, 'Product did not work properly, had to return it for a refund.', to_date('2022-09-15','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (10, 4, 1, 'Product is of good quality, arrived in a timely manner.', to_date('2022-10-20','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (11, 3, 4, 'Product had some minor issues but was able to fix them myself.', to_date('2022-11-25','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (12, 5, 0, 'Product exceeded my expectations, would purchase again!', to_date('2022-12-30','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (13, 4, 2, 'Good product overall, but had some issues with delivery.', to_date('2023-01-05','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (14, 2, 10, 'Product was not as described, disappointed with purchase.', to_date('2023-02-10','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (15, 5, 0, 'Amazing product, could not be happier with my purchase!', to_date('2023-03-15','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (16, 3, 5, 'Product had some defects, but customer service was able to assist in resolving the issue.', to_date('2023-04-20','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (17, 4, 2, 'Great product, would definitely recommend to others!', to_date('2023-05-25','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (18, 2, 8, 'Product did not work properly, had to return it for a replacement.', to_date('2023-06-30','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (19, 5, 0, 'Product exceeded my expectations, could not be happier!', to_date('2023-07-05','YYYY-MM-DD'));
+INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (20, 3, 4, 'Product had some minor issues, but overall satisfied with purchase.', to_date('2023-08-10','YYYY-MM-DD'));
+
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (1, '123 Main St', 'Apt 1', 1, 1);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (2, '456 Broadway', 'Suite 2', 2, 4);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (3, '789 Main St', 'Unit 3', 3, 2);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (4, '321 Elm St', '', 4, 10);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (5, '555 Oak St', 'Apt 5B', 5, 13);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (6, '777 Walnut Ave', '', 6, 16);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (7, '999 Pine St', 'Unit 7', 7, 19);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (8, '234 Main St', 'Apt 2B', 8, 3);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (9, '567 Park Ave', '', 9, 4);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (10, '890 Elm St', 'Suite 4', 10, 8);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (11, '432 Maple St', '', 11, 11);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (12, '654 Oak St', 'Unit 6', 12, 14);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (13, '876 Walnut Ave', 'Apt 3C', 13, 17);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (14, '1098 Pine St', '', 14, 19);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (15, '135 Main St', 'Unit 8', 15, 20);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (16, '246 Broadway', '', 16, 5);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (17, '357 Main St', 'Apt 3A', 17, 9);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (18, '468 Elm St', '', 18, 12);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (19, '579 Oak St', 'Suite 5', 19, 15);
+INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
+VALUES (20, '690 Walnut Ave', 'Unit 9', 20, 18);
+
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (1, 4, 10, 6, 'Rough Book', '50', 'ordered', 3.99, '3-5 days', 0.5, 8.5, 'White', 11.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (2, 12, 17, 1, 'Cup', '20', 'delivered', 9.99, '2-3 days', 0.3, 3.5, 'Blue', 4.5);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (3, 9, 7, 5, 'T-shirt', '30', 'ordered', 19.99, '5-7 days', 0.6, 10.0, 'Black', 8.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (4, 18, 2, 12, 'Notepad', '40', 'ordered', 1.99, '3-5 days', 0.2, 6.0, 'Yellow', 9.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (5, 15, 19, 8, 'Mug', '10', 'delivered', 7.99, '2-3 days', 0.4, 4.5, 'Red', 4.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (6, 2, 8, 9, 'Pen', '100', 'ordered', 0.99, '3-5 days', 0.1, 1.0, 'Black', 14.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (7, 7, 14, 2, 'Highlighter', '50', 'delivered', 2.49, '2-3 days', 0.1, 1.5, 'Yellow', 11.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (8, 11, 16, 18, 'Eraser', '30', 'ordered', 0.49, '3-5 days', 0.05, 2.0, 'Pink', 6.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (9, 13, 3, 16, 'Pencil', '75', 'ordered', 0.29, '3-5 days', 0.1, 1.0, 'Green', 15.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (10, 5, 18, 11, 'Scissors', '20', 'delivered', 4.99, '2-3 days', 0.3, 4.5, 'Black', 4.5);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (11, 20, 9, 7, 'Stapler', '10', 'ordered', 6.99, '3-5 days', 0.7, 6.0, 'Silver', 3.5);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (12, 6, 1, 19, 'Calculator', '5', 'delivered', 14.99, '2-3 days', 0.5, 4.0, 'Black', 2.0);
+INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
+VALUES (13, 1, 1, 7, 'Marker', '35', 'ordered', 3.99, '2-3 days', 0.2, 4.0, 'Black', 5.0);
+
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
+VALUES (1, 5,  'credit', 'visa', '1234-5678-9012-3456', 'John Smith', to_date('2022-05-15','YYYY-MM-DD'), 10,  50.00);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
+VALUES (2, 9, 'cash', NULL, NULL, NULL, to_date('2022-01-21','YYYY-MM-DD'), NULL,  25.50);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
+VALUES (3, 12, 'debit', 'mastercard', '9876-5432-1098-7654', 'Emily Davis', to_date('2022-03-12','YYYY-MM-DD'), NULL,  30.00);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
+VALUES (4, 7, 'credit', 'amex', '2468-1357-9135-2468', 'Michael Johnson', to_date('2022-08-05','YYYY-MM-DD'), 5,  20.00);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id, amount_paid)
+VALUES (5, 16, 'cash', NULL, NULL, NULL, to_date('2022-11-18','YYYY-MM-DD'), NULL,  12.75);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id, amount_paid)
+VALUES (6, 1,  'debit', 'visa', '5555-5555-5555-4444', 'Sarah Lee', to_date('2022-02-08','YYYY-MM-DD'), NULL,  45.00);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
+VALUES (7, 20,  'credit', 'mastercard', '1111-2222-3333-4444', 'David Kim', to_date('2022-06-23','YYYY-MM-DD'), 7,  75.00);
+
+INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
+VALUES (8, 4, 'cash', NULL, NULL, NULL, to_date('2022-09-14','YYYY-MM-DD'), NULL, 16.50);
+
+
+truncate table order_product;
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (1, 5, 8, 10);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (2, 2, 3, 5);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (3, 7, 9, 2);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (4, 11, 5, 1);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (5, 9, 2, 8);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (6, 6, 1, 3);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (7, 1, 6, 6);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (8, 10, 7, 12);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (9, 12, 10, 4);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (10, 4, 4, 7);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (11, 8, 12, 2);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (12, 3, 11, 9);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (13, 13, 1, 1);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (14, 1, 5, 3);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (15, 2, 8, 6);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (16, 7, 2, 8);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (17, 11, 10, 5);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (18, 9, 7, 2);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (19, 6, 3, 11);
+
+INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
+VALUES (20, 4, 12, 3);
+
  commit;
  
