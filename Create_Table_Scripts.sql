@@ -1,24 +1,44 @@
+--CLEANUP SCRIPT
+set serveroutput on
+declare
+    v_table_exists varchar(1) := 'Y';
+    v_sql varchar(2000);
+begin
+   dbms_output.put_line('Start schema cleanup');
+   for i in (select 'ORDER_PRODUCT' table_name from dual union all
+             select 'PAYMENT' table_name from dual union all
+             select 'PRODUCT' table_name from dual union all
+             select 'ADDRESS' table_name from dual union all
+             select 'REVIEWS' table_name from dual union all
+             select 'EMPLOYEE' table_name from dual union all
+             select 'VOUCHER' table_name from dual union all
+             select 'PRODUCT_GROUP' table_name from dual union all
+             select 'SUPPLIER' table_name from dual union all
+             select 'CUSTOMER' table_name from dual union all
+             select 'ZIPCODE' table_name from dual
+   )
+   loop
+   dbms_output.put_line('....Drop table '||i.table_name);
+   begin
+       select 'Y' into v_table_exists
+       from USER_TABLES
+       where TABLE_NAME=i.table_name;
 
---BEGIN
---EXECUTE IMMEDIATE 'DROP TABLE ADDRESS CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE ZIPCODE CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE CUSTOMER CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE ORDER_PRODUCT CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE REVIEWS CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE PRODUCT CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE SUPPLIER CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE BILLING CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE PRODUCT_GROUP CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE PAYMENT CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE EMPLOYEES CASCADE CONSTRAINTS';
---EXECUTE IMMEDIATE 'DROP TABLE VOUCHER CASCADE CONSTRAINTS';
---EXCEPTION
---WHEN OTHERS
---THEN NULL;
---END;
---COMMIT;
-
-
+       v_sql := 'drop table '||i.table_name;
+       execute immediate v_sql;
+       dbms_output.put_line('........Table '||i.table_name||' dropped successfully');
+       
+   exception
+       when no_data_found then
+           dbms_output.put_line('........Table already dropped');
+   end;
+   end loop;
+   dbms_output.put_line('Schema cleanup successfully completed');
+exception
+   when others then
+      dbms_output.put_line('Failed to execute code:'||sqlerrm);
+end;
+/
 --Create table Statements
 Create table Zipcode(
 zipcode_id number(5) PRIMARY KEY,
@@ -147,11 +167,5 @@ CONSTRAINT fk_employee_id
 quantity number(5)
 );
 
-COMMIT;
-
-
-
-
-
-
-
+ commit;
+ 
