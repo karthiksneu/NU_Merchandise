@@ -39,6 +39,7 @@ exception
       dbms_output.put_line('Failed to execute code:'||sqlerrm);
 end;
 /
+COMMIT;
 --Create table Statements
 Create table Zipcode(
 zipcode_id number(5) PRIMARY KEY,
@@ -166,7 +167,7 @@ CONSTRAINT fk_employee_id
     REFERENCES EMPLOYEE(employee_id),
 quantity number(5)
 );
-
+COMMIT;
 
 truncate table Zipcode;
 truncate table Customer;
@@ -180,6 +181,7 @@ truncate table Product;
 truncate table Payment;
 truncate table order_product;
 
+-- Script to insert values in tables
 --truncate table Zipcode;
 
 INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(1, 'California', 'Los Angeles', '90001');
@@ -202,9 +204,9 @@ INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(17, 'Ohio', 'Cleve
 INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(18, 'Ohio', 'Cincinnati', '45201');
 INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(19, 'Washington', 'Seattle', '98101');
 INSERT INTO Zipcode (zipcode_id, state, city, zipcode) VALUES(20, 'Washington', 'Spokane', '99201');
+COMMIT;
 
-
-truncate table customer;
+--truncate table customer;
 INSERT INTO Customer VALUES (1, 'John', 'Doe', 'johndoe@email.com', '1234567890', 'Student');
 INSERT INTO Customer VALUES (2, 'Jane', 'Smith', 'janesmith@email.com', '2345678901', 'Faculty');
 INSERT INTO Customer VALUES (3, 'David', 'Lee', 'davidlee@email.com', '3456789012', 'Student');
@@ -225,7 +227,7 @@ INSERT INTO Customer VALUES (17, 'Steven', 'Lee', 'stevenlee@email.com', '789012
 INSERT INTO Customer VALUES (18, 'Jessica', 'Hernandez', 'jessicahernandez@email.com', '8901234567', 'Student');
 INSERT INTO Customer VALUES (19, 'Christopher', 'Gomez', 'christophergomez@email.com', '9012345678', 'Faculty');
 INSERT INTO Customer VALUES (20, 'Kimberly', 'Perez', 'kimberlyperez@email.com', '0123456789', 'Student');
-
+COMMIT;
 
 INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
 VALUES (1, 'ABC Inc.', 500);
@@ -267,7 +269,7 @@ INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
 VALUES (19, 'UVW Industries', 950);
 INSERT INTO Supplier (supplier_id, supplier_name, supply_quantity)
 VALUES (20, 'XYZ Enterprises', 1100);
-
+COMMIT;
 
 
 INSERT INTO product_group (group_id, group_name)
@@ -310,6 +312,7 @@ INSERT INTO product_group (group_id, group_name)
 VALUES (19, 'Travel and Luggage');
 INSERT INTO product_group (group_id, group_name)
 VALUES (20, 'Gifts and Collectibles');
+COMMIT;
 
 INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (1, 'ABC123', 10);
 INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (2, 'DEF456', 20);
@@ -331,6 +334,7 @@ INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (17, 'WXY901', 
 INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (18, 'ZAB234', 30);
 INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (19, 'CDE567', 40);
 INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (20, 'FGH890', 50);
+COMMIT;
 
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (1, 'John Doe', 'Manager', TO_DATE('2022-01-01', 'YYYY-MM-DD'), 10000);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (2, 'Jane Smith', 'Manager', TO_DATE('2022-02-01', 'YYYY-MM-DD'), 8000);
@@ -344,7 +348,7 @@ INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (10, 'Amy Lee',  'Manager', TO_DATE('2022-10-01', 'YYYY-MM-DD'), 9500);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (11, 'Erica Nguyen', 'Sales', TO_DATE('2022-11-01', 'YYYY-MM-DD'), 6500);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (12, 'Chris Johnson', 'Manager', TO_DATE('2022-12-01', 'YYYY-MM-DD'), 10000);
-
+COMMIT;
 
 INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (1, 4, 2, 'Great product, works as advertised!', to_date('2022-01-05','YYYY-MM-DD'));
 INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (2, 3, 5, 'Product had some minor defects but overall satisfied.', to_date('2022-02-10','YYYY-MM-DD'));
@@ -366,6 +370,7 @@ INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, 
 INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (18, 2, 8, 'Product did not work properly, had to return it for a replacement.', to_date('2023-06-30','YYYY-MM-DD'));
 INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (19, 5, 0, 'Product exceeded my expectations, could not be happier!', to_date('2023-07-05','YYYY-MM-DD'));
 INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (20, 3, 4, 'Product had some minor issues, but overall satisfied with purchase.', to_date('2023-08-10','YYYY-MM-DD'));
+COMMIT;
 
 INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
 VALUES (1, '123 Main St', 'Apt 1', 1, 1);
@@ -407,6 +412,7 @@ INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipc
 VALUES (19, '579 Oak St', 'Suite 5', 19, 15);
 INSERT INTO Address (address_id, address_line1, address_line2, customer_id, zipcode_id)
 VALUES (20, '690 Walnut Ave', 'Unit 9', 20, 18);
+COMMIT;
 
 INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
 VALUES (1, 4, 10, 6, 'Rough Book', '50', 'ordered', 3.99, '3-5 days', 0.5, 8.5, 'White', 11.0);
@@ -434,6 +440,7 @@ INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, 
 VALUES (12, 6, 1, 19, 'Calculator', '5', 'delivered', 14.99, '2-3 days', 0.5, 4.0, 'Black', 2.0);
 INSERT INTO Product(product_id, review_id, supplier_id, group_id, product_name, available_number, status, price, shipment_duration, weight, width, color, height)
 VALUES (13, 1, 1, 7, 'Marker', '35', 'ordered', 3.99, '2-3 days', 0.2, 4.0, 'Black', 5.0);
+COMMIT;
 
 
 INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
@@ -459,9 +466,9 @@ VALUES (7, 20,  'credit', 'mastercard', '1111-2222-3333-4444', 'David Kim', to_d
 
 INSERT INTO payment (payment_id, customer_id,  payment_mode, card_type, card_number, cardholder_name, order_date, voucher_id,  amount_paid)
 VALUES (8, 4, 'cash', NULL, NULL, NULL, to_date('2022-09-14','YYYY-MM-DD'), NULL, 16.50);
+COMMIT;
 
-
-truncate table order_product;
+--truncate table order_product;
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
 VALUES (1, 5, 3, 8, 10);
 
@@ -521,7 +528,6 @@ VALUES (19, 6, 4, 3, 11);
 
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
 VALUES (20, 4, 2, 12, 3);
-
 COMMIT;
  
 
