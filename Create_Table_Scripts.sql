@@ -462,65 +462,65 @@ VALUES (8, 4, 'cash', NULL, NULL, NULL, to_date('2022-09-14','YYYY-MM-DD'), NULL
 
 
 truncate table order_product;
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (1, 5, 8, 10);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (1, 5, 3, 8, 10);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (2, 2, 3, 5);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (2, 2, 4,  3, 5);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (3, 7, 9, 2);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (3, 7, 2, 9, 2);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (4, 11, 5, 1);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (4, 11, 1, 5, 1);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (5, 9, 2, 8);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (5, 9, 3, 2, 8);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (6, 6, 1, 3);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (6, 6, 5, 1, 3);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (7, 1, 6, 6);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (7, 1, 5, 6, 6);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (8, 10, 7, 12);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (8, 10, 7, 7, 12);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (9, 12, 10, 4);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (9, 12, 8, 10, 4);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (10, 4, 4, 7);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (10, 4, 2, 4, 7);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (11, 8, 12, 2);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (11, 8, 1, 12, 2);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (12, 3, 11, 9);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (12, 3, 6, 11, 9);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (13, 13, 1, 1);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (13, 13, 4, 1, 1);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (14, 1, 5, 3);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (14, 1, 2, 5, 3);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (15, 2, 8, 6);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (15, 2, 1, 8, 6);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (16, 7, 2, 8);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (16, 7, 8, 2, 8);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (17, 11, 10, 5);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (17, 11, 6, 10, 5);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (18, 9, 7, 2);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (18, 9, 1, 7, 2);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (19, 6, 3, 11);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (19, 6, 4, 3, 11);
 
-INSERT INTO order_product (order_product_id, product_id, employee_id, quantity)
-VALUES (20, 4, 12, 3);
+INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
+VALUES (20, 4, 2, 12, 3);
 
  commit;
  
