@@ -11,3 +11,8 @@ Our aim is to develop a retail management system that examines the organization'
 3.	Revenue management: It will monitor the revenue generated both offline and online. 
 4.	Quality control: The product list will provide the smallest number of defects and the highest amount of quality, which will assist to maintain high-quality products and boost total sales. 
  
+ Steps:
+
+1. Execute "Create_Table_Scripts.sql" file as admin with oracle autonomous database.
+2. Execute "Create_Table_Scripts.sql" as "NU_MERCHANDISE_ADMIN" with password "Oracledb2023"
+
