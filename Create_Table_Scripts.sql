@@ -591,3 +591,12 @@ SELECT designation, employee_name, salary
 FROM employee
 ORDER BY designation, employee_name;
 COMMIT;
+
+--grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_SALARY_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_SALES_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on PRODUCT_COLOR_VIEW to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on PRODUCT_VIEW to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on REVENUE_BY_PAYMENT_MODE to NU_MERCHANDISE_ADMIN;
