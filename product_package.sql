@@ -1,5 +1,45 @@
 SET SERVEROUTPUT ON;
 
+--Product package
+
+CREATE OR REPLACE PACKAGE product_package AS
+    PROCEDURE insert_product (
+        p_product_id        IN product.product_id%TYPE,
+        p_review_id         IN product.review_id%TYPE,
+        p_supplier_id       IN product.supplier_id%TYPE,
+        p_group_id          IN product.group_id%TYPE,
+        p_product_name      IN product.product_name%TYPE,
+        p_available_number  IN product.available_number%TYPE,
+        p_status            IN product.status%TYPE,
+        p_price             IN product.price%TYPE,
+        p_shipment_duration IN product.shipment_duration%TYPE,
+        p_weight            IN product.weight%TYPE,
+        p_width             IN product.width%TYPE,
+        p_color             IN product.color%TYPE,
+        p_height            IN product.height%TYPE
+    );
+    PROCEDURE update_product (
+        p_product_id        IN product.product_id%TYPE,
+        p_review_id         IN product.review_id%TYPE,
+        p_supplier_id       IN product.supplier_id%TYPE,
+        p_group_id          IN product.group_id%TYPE,
+        p_product_name      IN product.product_name%TYPE,
+        p_available_number  IN product.available_number%TYPE,
+        p_status            IN product.status%TYPE,
+        p_price             IN product.price%TYPE,
+        p_shipment_duration IN product.shipment_duration%TYPE,
+        p_weight            IN product.weight%TYPE,
+        p_width             IN product.width%TYPE,
+        p_color             IN product.color%TYPE,
+        p_height            IN product.height%TYPE
+    );
+    PROCEDURE delete_product (
+        p_product_id in product.product_id%TYPE
+    );
+    
+END product_package;
+/
+
 CREATE OR REPLACE PACKAGE BODY product_package AS
     PROCEDURE insert_product (
     p_product_id        IN product.product_id%TYPE,
@@ -170,3 +210,49 @@ END delete_product;
 END product_package;
 
 /
+
+
+-- test cases
+-- First, create a new product record
+BEGIN
+    product_package.insert_product(
+        p_product_id        => 100,
+        p_review_id         => NULL,
+        p_supplier_id       => 1,
+        p_group_id          => 1,
+        p_product_name      => 'Pencil',
+        p_available_number  => 10,
+        p_status            => 'status',
+        p_price             => 100.00,
+        p_shipment_duration => 2,
+        p_weight            => 1.0,
+        p_width             => 10.0,
+        p_color             => 'RED',
+        p_height            => 10.0
+    );
+END;
+
+-- Next, update the product record
+BEGIN
+    product_package.update_product(
+        p_product_id        => 100,
+        p_review_id         => NULL,
+        p_supplier_id       => 2,
+        p_group_id          => 2,
+        p_product_name      => 'PEN Product',
+        p_available_number  => 20,
+        p_status            => 'status',
+        p_price             => 200.00,
+        p_shipment_duration => 3,
+        p_weight            => 2.0,
+        p_width             => 20.0,
+        p_color             => 'BLUE',
+        p_height            => 20.0
+    );
+END;
+
+-- Finally, delete the product record
+BEGIN
+    product_package.delete_product(100);
+END;
+

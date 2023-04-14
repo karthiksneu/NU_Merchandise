@@ -198,4 +198,22 @@ BEGIN
     p_customer_type => v_customer_type
   );
 END;
+/
 
+DECLARE
+  v_customer_id   NUMBER := 100;
+  v_first_name    VARCHAR2(50) := 'Johnson';
+  v_last_name     VARCHAR2(50) := 'Dsouza';
+  v_email_id      VARCHAR2(100) := 'johndsouza@example.com';
+  v_phone_number  VARCHAR2(20) := '1234567890';
+  v_customer_type VARCHAR2(50) := 'Student';
+BEGIN
+  customert_package.update_customers(
+    p_customer_id   => v_customer_id,
+    p_first_name    => v_first_name,
+    p_last_name     => v_last_name,
+    p_email_id      => v_email_id,
+    p_phone_number  => v_phone_number,
+    p_customer_type => v_customer_type
+  );
+END;
