@@ -1444,6 +1444,31 @@ BEGIN
     :NEW.review_date := SYSDATE;
 END;
 
+
+create or replace TRIGGER update_product_with_latest_review
+FOR INSERT ON Reviews
+COMPOUND TRIGGER
+
+    TYPE review_ids_tbl IS TABLE OF Reviews.review_id%TYPE INDEX BY PLS_INTEGER;
+    reviews_ids review_ids_tbl;
+
+    AFTER EACH ROW IS
+    BEGIN
+        reviews_ids(reviews_ids.COUNT + 1) := :NEW.review_id;
+    END AFTER EACH ROW;
+
+    AFTER STATEMENT IS
+    BEGIN
+        FOR i IN 1..reviews_ids.COUNT LOOP
+            UPDATE Product
+            SET review_id = reviews_ids(i)
+            WHERE product_id = (SELECT product_id FROM Reviews WHERE review_id = reviews_ids(i))
+            AND review_id IS NULL;
+        END LOOP;
+    END AFTER STATEMENT;
+
+END update_product_with_latest_review;
+
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
 --grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
