@@ -337,17 +337,17 @@ INSERT INTO Voucher (voucher_id, voucher_code, discounts) VALUES (20, 'FGH890', 
 COMMIT;
 
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (1, 'John Doe', 'Manager', TO_DATE('2022-01-01', 'YYYY-MM-DD'), 10000);
-INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (2, 'Jane Smith', 'Manager', TO_DATE('2022-02-01', 'YYYY-MM-DD'), 8000);
-INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (3, 'David Lee',  'Manager', TO_DATE('2022-03-01', 'YYYY-MM-DD'), 7000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (2, 'Jane Smith', 'Sales', TO_DATE('2022-02-01', 'YYYY-MM-DD'), 8000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (3, 'David Lee',  'Sales', TO_DATE('2022-03-01', 'YYYY-MM-DD'), 7000);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (4, 'Sarah Johnson', 'Sales', TO_DATE('2022-04-01', 'YYYY-MM-DD'), 6000);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (5, 'Mike Brown', 'Sales', TO_DATE('2022-05-01', 'YYYY-MM-DD'), 5500);
-INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (6, 'Emily Davis',  'Manager', TO_DATE('2022-06-01', 'YYYY-MM-DD'), 9000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (6, 'Emily Davis',  'Sales', TO_DATE('2022-06-01', 'YYYY-MM-DD'), 9000);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (7, 'Kevin Kim',  'Sales', TO_DATE('2022-07-01', 'YYYY-MM-DD'), 5000);
-INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (8, 'Linda Wang',  'Manager', TO_DATE('2022-08-01', 'YYYY-MM-DD'), 8500);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (8, 'Linda Wang',  'Sales', TO_DATE('2022-08-01', 'YYYY-MM-DD'), 8500);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (9, 'Robert Chen',  'Sales', TO_DATE('2022-09-01', 'YYYY-MM-DD'), 6000);
-INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (10, 'Amy Lee',  'Manager', TO_DATE('2022-10-01', 'YYYY-MM-DD'), 9500);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (10, 'Amy Lee',  'Sales', TO_DATE('2022-10-01', 'YYYY-MM-DD'), 9500);
 INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (11, 'Erica Nguyen', 'Sales', TO_DATE('2022-11-01', 'YYYY-MM-DD'), 6500);
-INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (12, 'Chris Johnson', 'Manager', TO_DATE('2022-12-01', 'YYYY-MM-DD'), 10000);
+INSERT INTO Employee (employee_id, employee_name, designation, join_date, salary) VALUES (12, 'Chris Johnson', 'Sales', TO_DATE('2022-12-01', 'YYYY-MM-DD'), 10000);
 COMMIT;
 
 INSERT INTO Reviews (review_id, quality_rating, defect_percentage, review_desc, review_date) VALUES (1, 4, 2, 'Great product, works as advertised!', to_date('2022-01-05','YYYY-MM-DD'));
@@ -485,7 +485,7 @@ INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id
 VALUES (5, 9, 3, 2, 8);
 
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
-VALUES (6, 6, 5, 1, 3);
+VALUES (6, 6, 5, 3, 3);
 
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
 VALUES (7, 1, 5, 6, 6);
@@ -503,10 +503,10 @@ INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id
 VALUES (11, 8, 1, 12, 2);
 
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
-VALUES (12, 3, 6, 11, 9);
+VALUES (12, 3, 6, 2, 9);
 
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
-VALUES (13, 13, 4, 1, 1);
+VALUES (13, 13, 4, 4, 1);
 
 INSERT INTO order_product (order_product_id, product_id, payment_id, employee_id, quantity)
 VALUES (14, 1, 2, 5, 3);
@@ -580,11 +580,10 @@ GROUP BY payment_mode;
 COMMIT;
 
 CREATE OR REPLACE VIEW EMPLOYEE_CUSTOMER_COUNT_VIEW AS
-SELECT e.employee_id, e.designation, COUNT(*) as customer_count
+SELECT e.employee_id, e.employee_name, COUNT(DISTINCT op.payment_id) AS num_of_customers
 FROM employee e
-JOIN customer c ON e.employee_id = c.customer_id
-GROUP BY e.employee_id, e.designation
-ORDER BY customer_count DESC;
+JOIN order_product op ON e.employee_id = op.employee_id
+GROUP BY e.employee_id, e.employee_name order by e.employee_id;
 COMMIT;
 
 CREATE OR REPLACE VIEW EMPLOYEE_SALARY_VIEW AS
@@ -593,6 +592,11 @@ FROM employee
 ORDER BY designation, employee_name;
 COMMIT;
 
-
-
-
+--grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_SALARY_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_SALES_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on PRODUCT_COLOR_VIEW to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on PRODUCT_VIEW to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on REVENUE_BY_PAYMENT_MODE to NU_MERCHANDISE_ADMIN;
