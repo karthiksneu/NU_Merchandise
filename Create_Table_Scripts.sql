@@ -680,6 +680,41 @@ END;
 
 
 
+
+--delete customer 
+CREATE OR REPLACE PROCEDURE delete_customer (
+p_customer_id IN Customer.customer_id%TYPE
+)
+IS
+v_count NUMBER;
+BEGIN
+-- Check if p_customer_id is null
+IF p_customer_id IS NULL THEN
+RAISE_APPLICATION_ERROR(-20002, 'Customer ID is null');
+END IF;
+
+-- Check if customer exists
+SELECT COUNT(*) INTO v_count
+FROM Customer
+WHERE customer_id = p_customer_id;
+
+IF v_count = 0 THEN
+-- Raise an exception if customer does not exist
+RAISE_APPLICATION_ERROR(-20001, 'Customer does not exist');
+ELSE
+-- Delete the customer
+DELETE FROM Customer
+WHERE customer_id = p_customer_id;
+DBMS_OUTPUT.PUT_LINE('Customer deleted successfully');
+END IF;
+EXCEPTION
+WHEN OTHERS THEN
+-- Handle any other exceptions
+DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+/
+
+
 -- Update procedure to update availability of quantity
 
 create or replace PROCEDURE update_product_quantity(
