@@ -1434,7 +1434,15 @@ END delete_product;
 END product_package;
 
 /
-    
+
+
+--- triggers
+create or replace TRIGGER add_review_date
+BEFORE INSERT ON Reviews
+FOR EACH ROW
+BEGIN
+    :NEW.review_date := SYSDATE;
+END;
 
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
