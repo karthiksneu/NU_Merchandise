@@ -630,6 +630,56 @@ EXCEPTION
 END;
 
 
+-- update customers
+
+CREATE OR REPLACE PROCEDURE update_customers(
+    p_customer_id IN NUMBER,
+    p_first_name IN VARCHAR2,
+    p_last_name IN VARCHAR2,
+    p_email_id IN VARCHAR2,
+    p_phone_number IN VARCHAR2,
+    p_customer_type IN VARCHAR2
+)
+IS
+    v_customer_count NUMBER;
+BEGIN
+    IF p_customer_id IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_email_id IS NULL OR p_phone_number IS NULL OR p_customer_type IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Invalid customer data.');
+        DBMS_OUTPUT.PUT_LINE('Invalid customer data.');
+    ELSE
+        -- Check if the customer exists
+        SELECT COUNT(*) INTO v_customer_count
+        FROM Customer
+        WHERE customer_id = p_customer_id;
+        
+        IF v_customer_count = 0 THEN
+            -- Customer does not exist, raise an error
+            RAISE_APPLICATION_ERROR(-20001, 'Customer does not exist.');
+        ELSE
+            -- Update the customer record
+            UPDATE Customer
+            SET first_name = COALESCE(p_first_name, first_name),
+                last_name = COALESCE(p_last_name, last_name),
+                email_id = COALESCE(p_email_id, email_id),
+                phone_number = COALESCE(p_phone_number, phone_number),
+                customer_type = COALESCE(p_customer_type, customer_type)
+            WHERE customer_id = p_customer_id;
+            
+            COMMIT;
+            
+            DBMS_OUTPUT.PUT_LINE('Customer record updated successfully.');
+        END IF;
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error and rollback the transaction
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        ROLLBACK;
+END;
+
+
+
+
 -- Update procedure to update availability of quantity
 
 create or replace PROCEDURE update_product_quantity(
