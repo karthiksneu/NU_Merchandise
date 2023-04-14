@@ -592,6 +592,107 @@ FROM employee
 ORDER BY designation, employee_name;
 COMMIT;
 
+--Stored Procedures
+
+create or replace PROCEDURE AddUsers(
+Customer_Id in Number,
+first_Name in VARCHAR2,
+last_name in VARCHAR2,
+Email_Id in VARCHAR2,
+Phone_Number in VARCHAR2,
+Customer_Type in VARCHAR2
+)
+IS
+BEGIN
+INSERT INTO Customer	
+VALUES (Customer_Id,first_Name,last_name,Email_Id,Phone_Number,Customer_Type);
+commit;
+END;
+
+-- Update procedure to update availability of quantity
+
+create or replace PROCEDURE update_product_quantity(
+    p_product_id IN NUMBER,
+    p_quantity IN NUMBER
+)
+IS
+    v_available_number NUMBER;
+BEGIN
+    SELECT available_number INTO v_available_number
+    FROM product
+    WHERE product_id = p_product_id;
+
+    IF v_available_number >= p_quantity THEN
+        UPDATE product
+        SET available_number = available_number - p_quantity
+        WHERE product_id = p_product_id;
+    ELSE
+        RAISE_APPLICATION_ERROR(-20001, 'Not enough products available');
+    END IF;
+END;
+
+-- Get employee details from employee id
+
+create or replace PROCEDURE get_employee_details (p_employee_id IN NUMBER) 
+IS
+  -- Declare cursor
+  CURSOR emp_cursor IS
+    SELECT employee_id, employee_name, join_date
+    FROM employee
+    WHERE employee_id = p_employee_id;
+
+  -- Declare variables to store data
+  v_employee_id employee.employee_id%TYPE;
+  v_employee_name employee.employee_name%TYPE;
+  v_join_date employee.join_date%TYPE;
+BEGIN
+  -- Open cursor
+  OPEN emp_cursor;
+
+  -- Fetch data
+  FETCH emp_cursor INTO v_employee_id, v_employee_name, v_join_date;
+
+  -- Close cursor
+  CLOSE emp_cursor;
+
+  -- Display data
+  DBMS_OUTPUT.PUT_LINE('Employee ID: ' || v_employee_id);
+  DBMS_OUTPUT.PUT_LINE('First Name: ' || v_employee_name);
+  DBMS_OUTPUT.PUT_LINE('Hire Date: ' || v_join_date);
+END;
+
+-- get all products
+
+create or replace PROCEDURE get_all_products
+IS
+  CURSOR product_cursor IS
+    SELECT * FROM Product;
+BEGIN
+  FOR product_rec IN product_cursor
+  LOOP
+
+    DBMS_OUTPUT.PUT_LINE('Product ID: ' || product_rec.product_id ||
+                         ', Name: ' || product_rec.product_name ||
+                         ', Price: ' || product_rec.price ||
+                         ', Available: ' || product_rec.available_number);
+  END LOOP;
+END;
+
+-- get all customers who have applied voucher
+
+create or replace PROCEDURE get_customers_using_voucher
+IS
+BEGIN
+  FOR customer IN (SELECT c.first_name, c.last_name, c.email_id, c.phone_number
+                   FROM customer c
+                   JOIN payment p ON c.customer_id = p.customer_id
+                   WHERE p.voucher_id IS NOT NULL)
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(customer.first_name || ' ' || customer.last_name || ', ' || customer.email_id || ', ' || customer.phone_number);
+  END LOOP;
+END;
+
+
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
 --grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
