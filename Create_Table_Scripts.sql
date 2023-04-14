@@ -1035,6 +1035,40 @@ EXCEPTION
 END;
 /
 
+
+-- stored procedure to add reviews
+create or replace PROCEDURE add_review(
+    p_quality_rating IN Reviews.quality_rating%TYPE,
+    p_defect_percentage IN Reviews.defect_percentage%TYPE,
+    p_review_desc IN Reviews.review_desc%TYPE,
+    p_product_id IN Reviews.product_id%TYPE
+) AS
+BEGIN
+    -- Handle null values
+    IF p_quality_rating IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Quality rating cannot be null');
+    END IF;
+
+    IF p_defect_percentage IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Defect percentage cannot be null');
+    END IF;
+
+    IF p_review_desc IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Review description cannot be null');
+    END IF;
+
+    IF p_product_id IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Product ID cannot be null');
+    END IF;
+
+    -- Insert the review
+    INSERT INTO Reviews(review_id, quality_rating, defect_percentage, review_desc, product_id)
+    VALUES(Reviews_seq.NEXTVAL, p_quality_rating, p_defect_percentage, p_review_desc, p_product_id);
+
+    COMMIT;
+END;
+
+
 --packages
 --1. Customer package -> sp create/update/delete -> functions-> Function to insert a new address for a customer:
 --
@@ -1434,7 +1468,40 @@ END delete_product;
 END product_package;
 
 /
-    
+
+
+--- triggers
+create or replace TRIGGER add_review_date
+BEFORE INSERT ON Reviews
+FOR EACH ROW
+BEGIN
+    :NEW.review_date := SYSDATE;
+END;
+
+
+create or replace TRIGGER update_product_with_latest_review
+FOR INSERT ON Reviews
+COMPOUND TRIGGER
+
+    TYPE review_ids_tbl IS TABLE OF Reviews.review_id%TYPE INDEX BY PLS_INTEGER;
+    reviews_ids review_ids_tbl;
+
+    AFTER EACH ROW IS
+    BEGIN
+        reviews_ids(reviews_ids.COUNT + 1) := :NEW.review_id;
+    END AFTER EACH ROW;
+
+    AFTER STATEMENT IS
+    BEGIN
+        FOR i IN 1..reviews_ids.COUNT LOOP
+            UPDATE Product
+            SET review_id = reviews_ids(i)
+            WHERE product_id = (SELECT product_id FROM Reviews WHERE review_id = reviews_ids(i))
+            AND review_id IS NULL;
+        END LOOP;
+    END AFTER STATEMENT;
+
+END update_product_with_latest_review;
 
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
