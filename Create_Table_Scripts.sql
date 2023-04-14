@@ -1035,6 +1035,40 @@ EXCEPTION
 END;
 /
 
+
+-- stored procedure to add reviews
+create or replace PROCEDURE add_review(
+    p_quality_rating IN Reviews.quality_rating%TYPE,
+    p_defect_percentage IN Reviews.defect_percentage%TYPE,
+    p_review_desc IN Reviews.review_desc%TYPE,
+    p_product_id IN Reviews.product_id%TYPE
+) AS
+BEGIN
+    -- Handle null values
+    IF p_quality_rating IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Quality rating cannot be null');
+    END IF;
+
+    IF p_defect_percentage IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Defect percentage cannot be null');
+    END IF;
+
+    IF p_review_desc IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Review description cannot be null');
+    END IF;
+
+    IF p_product_id IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Product ID cannot be null');
+    END IF;
+
+    -- Insert the review
+    INSERT INTO Reviews(review_id, quality_rating, defect_percentage, review_desc, product_id)
+    VALUES(Reviews_seq.NEXTVAL, p_quality_rating, p_defect_percentage, p_review_desc, p_product_id);
+
+    COMMIT;
+END;
+
+
 --packages
 --1. Customer package -> sp create/update/delete -> functions-> Function to insert a new address for a customer:
 --
