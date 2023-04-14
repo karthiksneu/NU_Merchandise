@@ -591,3 +591,956 @@ SELECT designation, employee_name, salary
 FROM employee
 ORDER BY designation, employee_name;
 COMMIT;
+
+--Stored Procedures
+-- Create new customer
+CREATE OR REPLACE PROCEDURE create_newcustomer (
+    p_customer_id   IN customer.customer_id%TYPE,
+    p_first_name    IN customer.first_name%TYPE,
+    p_last_name     IN customer.last_name%TYPE,
+    p_email_id      IN customer.email_id%TYPE,
+    p_phone_number  IN customer.phone_number%TYPE,
+    p_customer_type IN customer.customer_type%TYPE
+) AS
+    l_count NUMBER;
+BEGIN
+  -- Check if customer already exists
+    SELECT
+        COUNT(*)
+    INTO l_count
+    FROM
+        customer
+    WHERE
+        customer_id = p_customer_id;
+
+    IF l_count > 0 THEN
+        raise_application_error(-20001, 'Customer already exists.');
+    ELSE
+    -- Perform validation on customer data
+        IF p_first_name IS NULL OR p_last_name IS NULL OR p_email_id IS NULL OR p_phone_number IS NULL OR p_customer_type IS NULL THEN
+            raise_application_error(-20002, 'Invalid customer data.');
+            dbms_output.put_line('Invalid customer data.');
+        ELSE
+      -- Insert new customer into the table
+            INSERT INTO customer (
+                customer_id,
+                first_name,
+                last_name,
+                email_id,
+                phone_number,
+                customer_type
+            ) VALUES (
+                p_customer_id,
+                p_first_name,
+                p_last_name,
+                p_email_id,
+                p_phone_number,
+                p_customer_type
+            );
+
+            dbms_output.put_line('New customer created successfully.');
+            COMMIT;
+        END IF;
+    END IF;
+
+EXCEPTION
+  -- Handle exceptions
+    WHEN OTHERS THEN
+        ROLLBACK;
+        dbms_output.put_line('Errors: '
+                             || sqlcode
+                             || ' - '
+                             || sqlerrm);
+END;
+
+-- update customers
+
+CREATE OR REPLACE PROCEDURE update_customers (
+    p_customer_id   IN NUMBER,
+    p_first_name    IN VARCHAR2,
+    p_last_name     IN VARCHAR2,
+    p_email_id      IN VARCHAR2,
+    p_phone_number  IN VARCHAR2,
+    p_customer_type IN VARCHAR2
+) IS
+    v_customer_count NUMBER;
+BEGIN
+    IF p_customer_id IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_email_id IS NULL OR p_phone_number IS NULL OR p_customer_type
+    IS NULL THEN
+        raise_application_error(-20002, 'Invalid customer data.');
+        dbms_output.put_line('Invalid customer data.');
+    ELSE
+        -- Check if the customer exists
+        SELECT
+            COUNT(*)
+        INTO v_customer_count
+        FROM
+            customer
+        WHERE
+            customer_id = p_customer_id;
+
+        IF v_customer_count = 0 THEN
+            -- Customer does not exist, raise an error
+            raise_application_error(-20001, 'Customer does not exist.');
+        ELSE
+            -- Update the customer record
+            UPDATE customer
+            SET
+                first_name = coalesce(p_first_name, first_name),
+                last_name = coalesce(p_last_name, last_name),
+                email_id = coalesce(p_email_id, email_id),
+                phone_number = coalesce(p_phone_number, phone_number),
+                customer_type = coalesce(p_customer_type, customer_type)
+            WHERE
+                customer_id = p_customer_id;
+
+            COMMIT;
+            dbms_output.put_line('Customer record updated successfully.');
+        END IF;
+
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error and rollback the transaction
+        dbms_output.put_line('Error: ' || sqlerrm);
+        ROLLBACK;
+END;
+
+
+
+--delete customer 
+CREATE OR REPLACE PROCEDURE delete_customer (
+    p_customer_id IN customer.customer_id%TYPE
+) IS
+    v_count NUMBER;
+BEGIN
+-- Check if p_customer_id is null
+    IF p_customer_id IS NULL THEN
+        raise_application_error(-20002, 'Customer ID is null');
+    END IF;
+
+-- Check if customer exists
+    SELECT
+        COUNT(*)
+    INTO v_count
+    FROM
+        customer
+    WHERE
+        customer_id = p_customer_id;
+
+    IF v_count = 0 THEN
+-- Raise an exception if customer does not exist
+        raise_application_error(-20001, 'Customer does not exist');
+    ELSE
+-- Delete the customer
+        DELETE FROM customer
+        WHERE
+            customer_id = p_customer_id;
+
+        dbms_output.put_line('Customer deleted successfully');
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+-- Handle any other exceptions
+        dbms_output.put_line('Error: ' || sqlerrm);
+END;
+/
+
+-- Update procedure to update availability of quantity
+
+CREATE OR REPLACE PROCEDURE update_product_quantity (
+    p_product_id IN NUMBER,
+    p_quantity   IN NUMBER
+) IS
+    v_available_number NUMBER;
+BEGIN
+    SELECT
+        available_number
+    INTO v_available_number
+    FROM
+        product
+    WHERE
+        product_id = p_product_id;
+
+    IF v_available_number >= p_quantity THEN
+        UPDATE product
+        SET
+            available_number = available_number - p_quantity
+        WHERE
+            product_id = p_product_id;
+
+    ELSE
+        raise_application_error(-20001, 'Not enough products available');
+    END IF;
+
+END;
+
+-- Get employee details from employee id
+
+CREATE OR REPLACE PROCEDURE get_employee_details (
+    p_employee_id IN NUMBER
+) IS
+  -- Declare cursor
+    CURSOR emp_cursor IS
+    SELECT
+        employee_id,
+        employee_name,
+        join_date
+    FROM
+        employee
+    WHERE
+        employee_id = p_employee_id;
+
+  -- Declare variables to store data
+    v_employee_id   employee.employee_id%TYPE;
+    v_employee_name employee.employee_name%TYPE;
+    v_join_date     employee.join_date%TYPE;
+BEGIN
+  -- Open cursor
+    OPEN emp_cursor;
+
+  -- Fetch data
+    FETCH emp_cursor INTO
+        v_employee_id,
+        v_employee_name,
+        v_join_date;
+
+  -- Close cursor
+    CLOSE emp_cursor;
+
+  -- Display data
+    dbms_output.put_line('Employee ID: ' || v_employee_id);
+    dbms_output.put_line('First Name: ' || v_employee_name);
+    dbms_output.put_line('Hire Date: ' || v_join_date);
+END;
+
+-- get all products
+
+CREATE OR REPLACE PROCEDURE get_all_products IS
+    CURSOR product_cursor IS
+    SELECT
+        *
+    FROM
+        product;
+
+BEGIN
+    FOR product_rec IN product_cursor LOOP
+        dbms_output.put_line('Product ID: '
+                             || product_rec.product_id
+                             || ', Name: '
+                             || product_rec.product_name
+                             || ', Price: '
+                             || product_rec.price
+                             || ', Available: '
+                             || product_rec.available_number);
+    END LOOP;
+END;
+
+-- get all customers who have applied voucher
+
+CREATE OR REPLACE PROCEDURE get_customers_using_voucher IS
+BEGIN
+    FOR customer IN (
+        SELECT
+            c.first_name,
+            c.last_name,
+            c.email_id,
+            c.phone_number
+        FROM
+                 customer c
+            JOIN payment p ON c.customer_id = p.customer_id
+        WHERE
+            p.voucher_id IS NOT NULL
+    ) LOOP
+        dbms_output.put_line(customer.first_name
+                             || ' '
+                             || customer.last_name
+                             || ', '
+                             || customer.email_id
+                             || ', '
+                             || customer.phone_number);
+    END LOOP;
+END;
+
+
+--Insert/Create new products 
+CREATE OR REPLACE PROCEDURE insert_product (
+    p_product_id        IN product.product_id%TYPE,
+    p_review_id         IN product.review_id%TYPE,
+    p_supplier_id       IN product.supplier_id%TYPE,
+    p_group_id          IN product.group_id%TYPE,
+    p_product_name      IN product.product_name%TYPE,
+    p_available_number  IN product.available_number%TYPE,
+    p_status            IN product.status%TYPE,
+    p_price             IN product.price%TYPE,
+    p_shipment_duration IN product.shipment_duration%TYPE,
+    p_weight            IN product.weight%TYPE,
+    p_width             IN product.width%TYPE,
+    p_color             IN product.color%TYPE,
+    p_height            IN product.height%TYPE
+) AS
+    l_count NUMBER;
+BEGIN
+-- Check if product already exists
+    SELECT
+        COUNT(*)
+    INTO l_count
+    FROM
+        product
+    WHERE
+        product_id = p_product_id;
+
+    IF l_count > 0 THEN
+    -- Update available_number if product exists
+        UPDATE product
+        SET
+            available_number = available_number + p_available_number
+        WHERE
+            product_id = p_product_id;
+
+        dbms_output.put_line('Product already exists, available number updated.');
+        COMMIT;
+    ELSE
+    -- Insert new product into the table
+        INSERT INTO product (
+            product_id,
+            review_id,
+            supplier_id,
+            group_id,
+            product_name,
+            available_number,
+            status,
+            price,
+            shipment_duration,
+            weight,
+            width,
+            color,
+            height
+        ) VALUES (
+            p_product_id,
+            p_review_id,
+            p_supplier_id,
+            p_group_id,
+            p_product_name,
+            p_available_number,
+            p_status,
+            p_price,
+            p_shipment_duration,
+            p_weight,
+            p_width,
+            p_color,
+            p_height
+        );
+
+        dbms_output.put_line('New product created successfully.');
+        COMMIT;
+    END IF;
+
+EXCEPTION
+-- Handle exceptions
+    WHEN OTHERS THEN
+        ROLLBACK;
+        dbms_output.put_line('Errors: '
+                             || sqlcode
+                             || ' - '
+                             || sqlerrm);
+END;
+/
+
+-- Procedure for updating an existing record in the Product table
+CREATE OR REPLACE PROCEDURE update_product (
+    p_product_id        IN product.product_id%TYPE,
+    p_review_id         IN product.review_id%TYPE,
+    p_supplier_id       IN product.supplier_id%TYPE,
+    p_group_id          IN product.group_id%TYPE,
+    p_product_name      IN product.product_name%TYPE,
+    p_available_number  IN product.available_number%TYPE,
+    p_status            IN product.status%TYPE,
+    p_price             IN product.price%TYPE,
+    p_shipment_duration IN product.shipment_duration%TYPE,
+    p_weight            IN product.weight%TYPE,
+    p_width             IN product.width%TYPE,
+    p_color             IN product.color%TYPE,
+    p_height            IN product.height%TYPE
+) AS
+BEGIN
+    UPDATE product
+    SET
+        review_id = p_review_id,
+        supplier_id = p_supplier_id,
+        group_id = p_group_id,
+        product_name = p_product_name,
+        available_number = p_available_number,
+        status = p_status,
+        price = p_price,
+        shipment_duration = p_shipment_duration,
+        weight = p_weight,
+        width = p_width,
+        color = p_color,
+        height = p_height
+    WHERE
+        product_id = p_product_id;
+
+    COMMIT;
+    dbms_output.put_line('Product with ID '
+                         || p_product_id
+                         || ' updated successfully.');
+EXCEPTION
+    WHEN no_data_found THEN
+        dbms_output.put_line('Product with ID '
+                             || p_product_id
+                             || ' not found.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        dbms_output.put_line('Error updating product with ID '
+                             || p_product_id
+                             || '.');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE delete_product (
+    p_product_id in product.product_id%TYPE
+) IS v_count NUMBER;
+BEGIN
+-- Check if p_product_id is null
+    IF p_product_id IS NULL THEN
+        raise_application_error(-20002, 'Product ID is null');
+    END IF;
+
+-- Check if product exists
+    SELECT
+        COUNT(*)
+    INTO v_count
+    FROM
+        product
+    WHERE
+        product_id = p_product_id;
+
+    IF v_count = 0 THEN
+-- Raise an exception if product does not exist
+        raise_application_error(-20001, 'Product does not exist');
+    ELSE
+-- Delete the product
+        DELETE FROM product
+        WHERE
+            product_id = p_product_id;
+        dbms_output.put_line('Product deleted successfully');
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+-- Handle any other exceptions
+        dbms_output.put_line('Error deleting product: ' || p_product_id || 'with error message' || sqlerrm);
+END;
+/
+
+
+-- stored procedure to add reviews
+create or replace PROCEDURE add_review(
+    p_quality_rating IN Reviews.quality_rating%TYPE,
+    p_defect_percentage IN Reviews.defect_percentage%TYPE,
+    p_review_desc IN Reviews.review_desc%TYPE,
+    p_product_id IN Reviews.product_id%TYPE
+) AS
+BEGIN
+    -- Handle null values
+    IF p_quality_rating IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Quality rating cannot be null');
+    END IF;
+
+    IF p_defect_percentage IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Defect percentage cannot be null');
+    END IF;
+
+    IF p_review_desc IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Review description cannot be null');
+    END IF;
+
+    IF p_product_id IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Product ID cannot be null');
+    END IF;
+
+    -- Insert the review
+    INSERT INTO Reviews(review_id, quality_rating, defect_percentage, review_desc, product_id)
+    VALUES(Reviews_seq.NEXTVAL, p_quality_rating, p_defect_percentage, p_review_desc, p_product_id);
+
+    COMMIT;
+END;
+
+
+--packages
+--1. Customer package -> sp create/update/delete -> functions-> Function to insert a new address for a customer:
+--
+--2. Product package -> sp create/update/delete -> functions-> Function to calculate order total
+--
+--3. Review Package -> sp create/update/delete -> functions-> Get all reviews
+--
+--4. Trigger Package
+
+--Customer package
+CREATE OR REPLACE PACKAGE customert_package AS
+    PROCEDURE create_newcustomer (
+        p_customer_id   IN customer.customer_id%TYPE,
+        p_first_name    IN customer.first_name%TYPE,
+        p_last_name     IN customer.last_name%TYPE,
+        p_email_id      IN customer.email_id%TYPE,
+        p_phone_number  IN customer.phone_number%TYPE,
+        p_customer_type IN customer.customer_type%TYPE
+    );
+
+    PROCEDURE update_customers (
+        p_customer_id   IN NUMBER,
+        p_first_name    IN VARCHAR2,
+        p_last_name     IN VARCHAR2,
+        p_email_id      IN VARCHAR2,
+        p_phone_number  IN VARCHAR2,
+        p_customer_type IN VARCHAR2
+    );
+
+    PROCEDURE delete_customer (
+        p_customer_id IN customer.customer_id%TYPE
+    );
+
+END customert_package;
+/
+
+CREATE OR REPLACE PACKAGE BODY customert_package AS
+
+    PROCEDURE create_newcustomer (
+        p_customer_id   IN customer.customer_id%TYPE,
+        p_first_name    IN customer.first_name%TYPE,
+        p_last_name     IN customer.last_name%TYPE,
+        p_email_id      IN customer.email_id%TYPE,
+        p_phone_number  IN customer.phone_number%TYPE,
+        p_customer_type IN customer.customer_type%TYPE
+    ) AS
+        l_count NUMBER;
+    BEGIN
+  -- Check if customer already exists
+        SELECT
+            COUNT(*)
+        INTO l_count
+        FROM
+            customer
+        WHERE
+            customer_id = p_customer_id;
+
+        IF l_count > 0 THEN
+            raise_application_error(-20001, 'Customer already exists.');
+        ELSE
+    -- Perform validation on customer data
+            IF p_first_name IS NULL OR p_last_name IS NULL OR p_email_id IS NULL OR p_phone_number IS NULL OR p_customer_type IS NULL
+            THEN
+                raise_application_error(-20002, 'Invalid customer data.');
+                dbms_output.put_line('Invalid customer data.');
+            ELSE
+      -- Insert new customer into the table
+                INSERT INTO customer (
+                    customer_id,
+                    first_name,
+                    last_name,
+                    email_id,
+                    phone_number,
+                    customer_type
+                ) VALUES (
+                    p_customer_id,
+                    p_first_name,
+                    p_last_name,
+                    p_email_id,
+                    p_phone_number,
+                    p_customer_type
+                );
+
+                dbms_output.put_line('New customer created successfully.');
+                COMMIT;
+            END IF;
+        END IF;
+
+    EXCEPTION
+  -- Handle exceptions
+        WHEN OTHERS THEN
+            ROLLBACK;
+            dbms_output.put_line('Errors: '
+                                 || sqlcode
+                                 || ' - '
+                                 || sqlerrm);
+    END create_newcustomer;
+
+    PROCEDURE update_customers (
+        p_customer_id   IN NUMBER,
+        p_first_name    IN VARCHAR2,
+        p_last_name     IN VARCHAR2,
+        p_email_id      IN VARCHAR2,
+        p_phone_number  IN VARCHAR2,
+        p_customer_type IN VARCHAR2
+    ) IS
+        v_customer_count NUMBER;
+    BEGIN
+        IF p_customer_id IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_email_id IS NULL OR p_phone_number IS NULL OR p_customer_type
+        IS NULL THEN
+            raise_application_error(-20002, 'Invalid customer data.');
+            dbms_output.put_line('Invalid customer data.');
+        ELSE
+        -- Check if the customer exists
+            SELECT
+                COUNT(*)
+            INTO v_customer_count
+            FROM
+                customer
+            WHERE
+                customer_id = p_customer_id;
+
+            IF v_customer_count = 0 THEN
+            -- Customer does not exist, raise an error
+                raise_application_error(-20001, 'Customer does not exist.');
+            ELSE
+            -- Update the customer record
+                UPDATE customer
+                SET
+                    first_name = coalesce(p_first_name, first_name),
+                    last_name = coalesce(p_last_name, last_name),
+                    email_id = coalesce(p_email_id, email_id),
+                    phone_number = coalesce(p_phone_number, phone_number),
+                    customer_type = coalesce(p_customer_type, customer_type)
+                WHERE
+                    customer_id = p_customer_id;
+
+                COMMIT;
+                dbms_output.put_line('Customer record updated successfully.');
+            END IF;
+
+        END IF;
+    EXCEPTION
+        WHEN OTHERS THEN
+        -- Log the error and rollback the transaction
+            dbms_output.put_line('Error: ' || sqlerrm);
+            ROLLBACK;
+    END update_customers;
+
+    PROCEDURE delete_customer (
+        p_customer_id IN customer.customer_id%TYPE
+    ) IS
+        v_count NUMBER;
+    BEGIN
+-- Check if p_customer_id is null
+        IF p_customer_id IS NULL THEN
+            raise_application_error(-20002, 'Customer ID is null');
+        END IF;
+
+-- Check if customer exists
+        SELECT
+            COUNT(*)
+        INTO v_count
+        FROM
+            customer
+        WHERE
+            customer_id = p_customer_id;
+
+        IF v_count = 0 THEN
+-- Raise an exception if customer does not exist
+            raise_application_error(-20001, 'Customer does not exist');
+        ELSE
+-- Delete the customer
+            DELETE FROM customer
+            WHERE
+                customer_id = p_customer_id;
+
+            dbms_output.put_line('Customer deleted successfully');
+        END IF;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+-- Handle any other exceptions
+            dbms_output.put_line('Error: ' || sqlerrm);
+    END delete_customer;
+
+END customert_package;
+/
+
+--Product package
+
+CREATE OR REPLACE PACKAGE product_package AS
+    PROCEDURE insert_product (
+        p_product_id        IN product.product_id%TYPE,
+        p_review_id         IN product.review_id%TYPE,
+        p_supplier_id       IN product.supplier_id%TYPE,
+        p_group_id          IN product.group_id%TYPE,
+        p_product_name      IN product.product_name%TYPE,
+        p_available_number  IN product.available_number%TYPE,
+        p_status            IN product.status%TYPE,
+        p_price             IN product.price%TYPE,
+        p_shipment_duration IN product.shipment_duration%TYPE,
+        p_weight            IN product.weight%TYPE,
+        p_width             IN product.width%TYPE,
+        p_color             IN product.color%TYPE,
+        p_height            IN product.height%TYPE
+    );
+    PROCEDURE update_product (
+        p_product_id        IN product.product_id%TYPE,
+        p_review_id         IN product.review_id%TYPE,
+        p_supplier_id       IN product.supplier_id%TYPE,
+        p_group_id          IN product.group_id%TYPE,
+        p_product_name      IN product.product_name%TYPE,
+        p_available_number  IN product.available_number%TYPE,
+        p_status            IN product.status%TYPE,
+        p_price             IN product.price%TYPE,
+        p_shipment_duration IN product.shipment_duration%TYPE,
+        p_weight            IN product.weight%TYPE,
+        p_width             IN product.width%TYPE,
+        p_color             IN product.color%TYPE,
+        p_height            IN product.height%TYPE
+    );
+    PROCEDURE delete_product (
+        p_product_id in product.product_id%TYPE
+    );
+    
+END product_package;
+/
+
+CREATE OR REPLACE PACKAGE BODY product_package AS
+    PROCEDURE insert_product (
+    p_product_id        IN product.product_id%TYPE,
+    p_review_id         IN product.review_id%TYPE,
+    p_supplier_id       IN product.supplier_id%TYPE,
+    p_group_id          IN product.group_id%TYPE,
+    p_product_name      IN product.product_name%TYPE,
+    p_available_number  IN product.available_number%TYPE,
+    p_status            IN product.status%TYPE,
+    p_price             IN product.price%TYPE,
+    p_shipment_duration IN product.shipment_duration%TYPE,
+    p_weight            IN product.weight%TYPE,
+    p_width             IN product.width%TYPE,
+    p_color             IN product.color%TYPE,
+    p_height            IN product.height%TYPE
+) AS
+    l_count NUMBER;
+BEGIN
+-- Check if product already exists
+    SELECT
+        COUNT(*)
+    INTO l_count
+    FROM
+        product
+    WHERE
+        product_id = p_product_id;
+
+    IF l_count > 0 THEN
+    -- Update available_number if product exists
+        UPDATE product
+        SET
+            available_number = available_number + p_available_number
+        WHERE
+            product_id = p_product_id;
+
+        dbms_output.put_line('Product already exists, available number updated.');
+        COMMIT;
+    ELSE
+    -- Insert new product into the table
+        INSERT INTO product (
+            product_id,
+            review_id,
+            supplier_id,
+            group_id,
+            product_name,
+            available_number,
+            status,
+            price,
+            shipment_duration,
+            weight,
+            width,
+            color,
+            height
+        ) VALUES (
+            p_product_id,
+            p_review_id,
+            p_supplier_id,
+            p_group_id,
+            p_product_name,
+            p_available_number,
+            p_status,
+            p_price,
+            p_shipment_duration,
+            p_weight,
+            p_width,
+            p_color,
+            p_height
+        );
+
+        dbms_output.put_line('New product created successfully.');
+        COMMIT;
+    END IF;
+
+EXCEPTION
+-- Handle exceptions
+    WHEN OTHERS THEN
+        ROLLBACK;
+        dbms_output.put_line('Errors: '
+                             || sqlcode
+                             || ' - '
+                             || sqlerrm);
+END insert_product;
+
+PROCEDURE update_product (
+    p_product_id        IN product.product_id%TYPE,
+    p_review_id         IN product.review_id%TYPE,
+    p_supplier_id       IN product.supplier_id%TYPE,
+    p_group_id          IN product.group_id%TYPE,
+    p_product_name      IN product.product_name%TYPE,
+    p_available_number  IN product.available_number%TYPE,
+    p_status            IN product.status%TYPE,
+    p_price             IN product.price%TYPE,
+    p_shipment_duration IN product.shipment_duration%TYPE,
+    p_weight            IN product.weight%TYPE,
+    p_width             IN product.width%TYPE,
+    p_color             IN product.color%TYPE,
+    p_height            IN product.height%TYPE
+) AS
+BEGIN
+    UPDATE product
+    SET
+        review_id = p_review_id,
+        supplier_id = p_supplier_id,
+        group_id = p_group_id,
+        product_name = p_product_name,
+        available_number = p_available_number,
+        status = p_status,
+        price = p_price,
+        shipment_duration = p_shipment_duration,
+        weight = p_weight,
+        width = p_width,
+        color = p_color,
+        height = p_height
+    WHERE
+        product_id = p_product_id;
+
+    COMMIT;
+    dbms_output.put_line('Product with ID '
+                         || p_product_id
+                         || ' updated successfully.');
+EXCEPTION
+    WHEN no_data_found THEN
+        dbms_output.put_line('Product with ID '
+                             || p_product_id
+                             || ' not found.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        dbms_output.put_line('Error updating product with ID '
+                             || p_product_id
+                             || '.');
+END update_product;
+
+PROCEDURE delete_product (
+    p_product_id in product.product_id%TYPE
+) IS v_count NUMBER;
+BEGIN
+-- Check if p_product_id is null
+    IF p_product_id IS NULL THEN
+        raise_application_error(-20002, 'Product ID is null');
+    END IF;
+
+-- Check if product exists
+    SELECT
+        COUNT(*)
+    INTO v_count
+    FROM
+        product
+    WHERE
+        product_id = p_product_id;
+
+    IF v_count = 0 THEN
+-- Raise an exception if product does not exist
+        raise_application_error(-20001, 'Product does not exist');
+    ELSE
+-- Delete the product
+        DELETE FROM product
+        WHERE
+            product_id = p_product_id;
+        dbms_output.put_line('Product deleted successfully');
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+-- Handle any other exceptions
+        dbms_output.put_line('Error deleting product: ' || p_product_id || 'with error message' || sqlerrm);
+END delete_product;
+
+END product_package;
+
+/
+
+
+--- triggers
+create or replace TRIGGER add_review_date
+BEFORE INSERT ON Reviews
+FOR EACH ROW
+BEGIN
+    :NEW.review_date := SYSDATE;
+END;
+
+
+create or replace TRIGGER update_product_with_latest_review
+FOR INSERT ON Reviews
+COMPOUND TRIGGER
+
+    TYPE review_ids_tbl IS TABLE OF Reviews.review_id%TYPE INDEX BY PLS_INTEGER;
+    reviews_ids review_ids_tbl;
+
+    AFTER EACH ROW IS
+    BEGIN
+        reviews_ids(reviews_ids.COUNT + 1) := :NEW.review_id;
+    END AFTER EACH ROW;
+
+    AFTER STATEMENT IS
+    BEGIN
+        FOR i IN 1..reviews_ids.COUNT LOOP
+            UPDATE Product
+            SET review_id = reviews_ids(i)
+            WHERE product_id = (SELECT product_id FROM Reviews WHERE review_id = reviews_ids(i))
+            AND review_id IS NULL;
+        END LOOP;
+    END AFTER STATEMENT;
+    
+    
+CREATE OR REPLACE TRIGGER trg_update_product_avail
+AFTER INSERT ON order_product
+FOR EACH ROW
+BEGIN
+  UPDATE product p
+  SET p.available_number = p.available_number - :NEW.quantity
+  WHERE p.product_id = :NEW.product_id;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_update_product_status
+AFTER UPDATE ON product
+FOR EACH ROW
+BEGIN
+  IF :NEW.available_number = 0 AND :OLD.available_number > 0 THEN
+    UPDATE product p
+    SET p.status = 'out of stock'
+    WHERE p.product_id = :NEW.product_id;
+  END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_update_supplier_supply_quantity
+AFTER INSERT ON order_product
+FOR EACH ROW
+BEGIN
+  UPDATE supplier s
+  SET s.supply_quantity = s.supply_quantity - :NEW.quantity
+  WHERE s.supplier_id = (SELECT p.supplier_id FROM product p WHERE p.product_id = :NEW.product_id);
+END;
+/
+
+END update_product_with_latest_review;
+
+--grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_SALARY_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on EMPLOYEE_SALES_VIEW to NU_MERCHANDISE_ADMIN;
+--grant select on PRODUCT_COLOR_VIEW to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on PRODUCT_VIEW to Customer , NU_MERCHANDISE_ADMIN;
+--grant select on REVENUE_BY_PAYMENT_MODE to NU_MERCHANDISE_ADMIN;
