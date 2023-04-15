@@ -4034,7 +4034,7 @@ CREATE OR REPLACE TRIGGER add_review_date BEFORE
 BEGIN
     :new.review_date := sysdate;
 END;
-
+/
 CREATE OR REPLACE TRIGGER update_product_with_latest_review FOR
     INSERT ON reviews
 COMPOUND TRIGGER
@@ -4077,8 +4077,8 @@ BEGIN
  
 	RETURN review_descrip;
 END;
-
-******************* FUNCTIONS ****************************
+/
+--******************* FUNCTIONS ****************************
 
 CREATE OR REPLACE FUNCTION review(product_name in VARCHAR)
 RETURN VARCHAR
@@ -4090,7 +4090,7 @@ BEGIN
  
 	RETURN review_descrip;
 END;
-
+/
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
 --grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
