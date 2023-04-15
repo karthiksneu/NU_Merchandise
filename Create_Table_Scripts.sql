@@ -592,7 +592,7 @@ FROM employee
 ORDER BY designation, employee_name;
 COMMIT;
 
---Stored Procedures
+--******************Stored Procedures*******************************
 -- Create new customer
 CREATE OR REPLACE PROCEDURE create_newcustomer (
     p_customer_id   IN customer.customer_id%TYPE,
@@ -653,7 +653,7 @@ EXCEPTION
                              || sqlerrm);
 END;
 
--- update customers
+-- ********************************UPDATE CUSTOMERS*******************************************
 
 CREATE OR REPLACE PROCEDURE update_customers (
     p_customer_id   IN NUMBER,
@@ -708,7 +708,7 @@ END;
 
 
 
---delete customer 
+--********************* DELETE CUSTOMER ***********************************
 CREATE OR REPLACE PROCEDURE delete_customer (
     p_customer_id IN customer.customer_id%TYPE
 ) IS
@@ -747,7 +747,7 @@ EXCEPTION
 END;
 /
 
--- Update procedure to update availability of quantity
+-- ************************* Update procedure to update availability of quantity ***************************
 
 CREATE OR REPLACE PROCEDURE update_product_quantity (
     p_product_id IN NUMBER,
@@ -775,8 +775,9 @@ BEGIN
     END IF;
 
 END;
+/
 
--- Get employee details from employee id
+-- **************************** Get employee details from employee id ******************************
 
 CREATE OR REPLACE PROCEDURE get_employee_details (
     p_employee_id IN NUMBER
@@ -815,7 +816,7 @@ BEGIN
     dbms_output.put_line('Hire Date: ' || v_join_date);
 END;
 
--- get all products
+-- ********************* get all products ******************************
 
 CREATE OR REPLACE PROCEDURE get_all_products IS
     CURSOR product_cursor IS
@@ -837,7 +838,7 @@ BEGIN
     END LOOP;
 END;
 
--- get all customers who have applied voucher
+-- ***************************** get all customers who have applied voucher ******************************
 
 CREATE OR REPLACE PROCEDURE get_customers_using_voucher IS
 BEGIN
@@ -864,7 +865,7 @@ BEGIN
 END;
 
 
---Insert/Create new products 
+-- ******************************** Insert/Create new products ************************************
 CREATE OR REPLACE PROCEDURE insert_product (
     p_product_id        IN product.product_id%TYPE,
     p_review_id         IN product.review_id%TYPE,
@@ -948,7 +949,7 @@ EXCEPTION
 END;
 /
 
--- Procedure for updating an existing record in the Product table
+-- **************************************** Procedure for updating an existing record in the Product table ********************************************
 CREATE OR REPLACE PROCEDURE update_product (
     p_product_id        IN product.product_id%TYPE,
     p_review_id         IN product.review_id%TYPE,
@@ -999,6 +1000,8 @@ EXCEPTION
 END;
 /
 
+-- ******************************************* DELETE A PRODUCT FROM TABLE *********************************
+
 CREATE OR REPLACE PROCEDURE delete_product (
     p_product_id in product.product_id%TYPE
 ) IS v_count NUMBER;
@@ -1037,7 +1040,7 @@ END;
 
 
 
---modified delete product
+-- ********************************************* modified delete product *******************************************
 create or replace PROCEDURE delete_product (
     p_product_id IN product.product_id%TYPE
 ) IS
@@ -1081,8 +1084,8 @@ EXCEPTION
         dbms_output.put_line('Error deleting product: ' || p_product_id || ' with error message ' || sqlerrm);
 END;
 
--- stored procedure to add reviews
-create or replace PROCEDURE add_review(
+-- ************************************** stored procedure to add reviews ************************************************
+CREATE OR REPLACE PROCEDURE add_review(
     p_quality_rating IN Reviews.quality_rating%TYPE,
     p_defect_percentage IN Reviews.defect_percentage%TYPE,
     p_review_desc IN Reviews.review_desc%TYPE,
@@ -1123,7 +1126,7 @@ END;
 --
 --4. Trigger Package
 
---Customer package
+--  *************************************** Customer package *******************************************************************
 CREATE OR REPLACE PACKAGE customert_package AS
     PROCEDURE create_newcustomer (
         p_customer_id   IN customer.customer_id%TYPE,
@@ -1146,6 +1149,8 @@ CREATE OR REPLACE PACKAGE customert_package AS
     PROCEDURE delete_customer (
         p_customer_id IN customer.customer_id%TYPE
     );
+    
+    
 
 END customert_package;
 /
@@ -1303,7 +1308,7 @@ CREATE OR REPLACE PACKAGE BODY customert_package AS
 END customert_package;
 /
 
---Product package
+-- ************************************* Product package ***************************************
 
 CREATE OR REPLACE PACKAGE product_package AS
     PROCEDURE insert_product (
@@ -1338,6 +1343,11 @@ CREATE OR REPLACE PACKAGE product_package AS
     );
     PROCEDURE delete_product (
         p_product_id in product.product_id%TYPE
+    );
+    
+    PROCEDURE update_product_quantity (
+        p_product_id IN NUMBER,
+        p_quantity   IN NUMBER
     );
     
 END product_package;
@@ -1510,12 +1520,40 @@ EXCEPTION
         dbms_output.put_line('Error deleting product: ' || p_product_id || 'with error message' || sqlerrm);
 END delete_product;
 
+    PROCEDURE update_product_quantity (
+        p_product_id IN NUMBER,
+        p_quantity   IN NUMBER
+    ) IS
+        v_available_number NUMBER;
+    BEGIN
+        SELECT
+            available_number
+        INTO v_available_number
+        FROM
+            product
+        WHERE
+            product_id = p_product_id;
+
+        IF v_available_number >= p_quantity THEN
+            UPDATE product
+            SET
+                available_number = available_number - p_quantity
+            WHERE
+                product_id = p_product_id;
+
+        ELSE
+            raise_application_error(-20001, 'Not enough products available');
+        END IF;
+
+    END;
+
 END product_package;
 
 /
 
 
---- triggers
+-- ************************************** TRIGGERS *******************************************
+
 create or replace TRIGGER add_review_date
 BEFORE INSERT ON Reviews
 FOR EACH ROW
