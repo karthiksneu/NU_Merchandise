@@ -231,7 +231,7 @@ BEGIN
         p_height            => 10.0
     );
 END;
-
+/
 -- Next, update the product record
 BEGIN
     product_package.update_product(
@@ -250,9 +250,10 @@ BEGIN
         p_height            => 20.0
     );
 END;
-
+/
 -- Finally, delete the product record
 BEGIN
     product_package.delete_product(100);
 END;
 
+/
