@@ -85,6 +85,7 @@ salary float
 
 create table Reviews(
 review_id number(20) primary key,
+product_id number(20),
 quality_rating number(2),
 defect_percentage number(2),
 review_desc varchar(120),
@@ -1084,12 +1085,19 @@ EXCEPTION
         dbms_output.put_line('Error deleting product: ' || p_product_id || ' with error message ' || sqlerrm);
 END;
 
+
+-- ************SEQUENCES******************
+CREATE SEQUENCE Reviews_seq
+START WITH 100
+INCREMENT BY 1
+NOCACHE;
+
 -- ************************************** stored procedure to add reviews ************************************************
 CREATE OR REPLACE PROCEDURE add_review(
     p_quality_rating IN Reviews.quality_rating%TYPE,
     p_defect_percentage IN Reviews.defect_percentage%TYPE,
     p_review_desc IN Reviews.review_desc%TYPE,
-    p_product_id IN Reviews.product_id%TYPE
+    p_product_id IN Product.product_id%TYPE
 ) AS
 BEGIN
     -- Handle null values
@@ -1110,12 +1118,17 @@ BEGIN
     END IF;
 
     -- Insert the review
-    INSERT INTO Reviews(review_id, quality_rating, defect_percentage, review_desc, product_id)
-    VALUES(Reviews_seq.NEXTVAL, p_quality_rating, p_defect_percentage, p_review_desc, p_product_id);
+    INSERT INTO Reviews(review_id, quality_rating, defect_percentage, review_desc, review_date)
+    VALUES(Reviews_seq.NEXTVAL, p_quality_rating, p_defect_percentage, p_review_desc, SYSDATE);
+
+    -- Update the product review_id
+    UPDATE Product
+    SET review_id = Reviews_seq.CURRVAL
+    WHERE product_id = p_product_id;
 
     COMMIT;
-END;
-
+END add_review;
+/
 
 --packages
 --1. Customer package -> sp create/update/delete -> functions-> Function to insert a new address for a customer:
@@ -1125,6 +1138,71 @@ END;
 --3. Review Package -> sp create/update/delete -> functions-> Get all reviews
 --
 --4. Trigger Package
+
+
+-- **************************************** REVIEW PACKAGE **************************************************
+
+CREATE OR REPLACE PACKAGE review_package AS
+    PROCEDURE add_review(
+        p_quality_rating IN Reviews.quality_rating%TYPE,
+        p_defect_percentage IN Reviews.defect_percentage%TYPE,
+        p_review_desc IN Reviews.review_desc%TYPE,
+        p_product_id IN Product.product_id%TYPE
+    );
+    
+END review_package;
+/
+
+CREATE OR REPLACE PACKAGE BODY review_package AS
+
+    PROCEDURE add_review (
+        p_quality_rating    IN reviews.quality_rating%TYPE,
+        p_defect_percentage IN reviews.defect_percentage%TYPE,
+        p_review_desc       IN reviews.review_desc%TYPE,
+        p_product_id        IN product.product_id%TYPE
+    ) AS
+    BEGIN
+    -- Handle null values
+        IF p_quality_rating IS NULL THEN
+            raise_application_error(-20001, 'Quality rating cannot be null');
+        END IF;
+        IF p_defect_percentage IS NULL THEN
+            raise_application_error(-20002, 'Defect percentage cannot be null');
+        END IF;
+        IF p_review_desc IS NULL THEN
+            raise_application_error(-20003, 'Review description cannot be null');
+        END IF;
+        IF p_product_id IS NULL THEN
+            raise_application_error(-20004, 'Product ID cannot be null');
+        END IF;
+
+    -- Insert the review
+        INSERT INTO reviews (
+            review_id,
+            quality_rating,
+            defect_percentage,
+            review_desc,
+            review_date
+        ) VALUES (
+            reviews_seq.NEXTVAL,
+            p_quality_rating,
+            p_defect_percentage,
+            p_review_desc,
+            sysdate
+        );
+
+    -- Update the product review_id
+        UPDATE product
+        SET
+            review_id = reviews_seq.CURRVAL
+        WHERE
+            product_id = p_product_id;
+
+        COMMIT;
+    END add_review;
+    
+END review_package;
+/
 
 --  *************************************** Customer package *******************************************************************
 CREATE OR REPLACE PACKAGE customert_package AS
@@ -1326,6 +1404,7 @@ CREATE OR REPLACE PACKAGE product_package AS
         p_color             IN product.color%TYPE,
         p_height            IN product.height%TYPE
     );
+
     PROCEDURE update_product (
         p_product_id        IN product.product_id%TYPE,
         p_review_id         IN product.review_id%TYPE,
@@ -1341,184 +1420,211 @@ CREATE OR REPLACE PACKAGE product_package AS
         p_color             IN product.color%TYPE,
         p_height            IN product.height%TYPE
     );
+
     PROCEDURE delete_product (
-        p_product_id in product.product_id%TYPE
+        p_product_id IN product.product_id%TYPE
     );
-    
+
     PROCEDURE update_product_quantity (
         p_product_id IN NUMBER,
         p_quantity   IN NUMBER
     );
-    
+
 END product_package;
 /
 
 CREATE OR REPLACE PACKAGE BODY product_package AS
-    PROCEDURE insert_product (
-    p_product_id        IN product.product_id%TYPE,
-    p_review_id         IN product.review_id%TYPE,
-    p_supplier_id       IN product.supplier_id%TYPE,
-    p_group_id          IN product.group_id%TYPE,
-    p_product_name      IN product.product_name%TYPE,
-    p_available_number  IN product.available_number%TYPE,
-    p_status            IN product.status%TYPE,
-    p_price             IN product.price%TYPE,
-    p_shipment_duration IN product.shipment_duration%TYPE,
-    p_weight            IN product.weight%TYPE,
-    p_width             IN product.width%TYPE,
-    p_color             IN product.color%TYPE,
-    p_height            IN product.height%TYPE
-) AS
-    l_count NUMBER;
-BEGIN
--- Check if product already exists
-    SELECT
-        COUNT(*)
-    INTO l_count
-    FROM
-        product
-    WHERE
-        product_id = p_product_id;
 
-    IF l_count > 0 THEN
+    PROCEDURE insert_product (
+        p_product_id        IN product.product_id%TYPE,
+        p_review_id         IN product.review_id%TYPE,
+        p_supplier_id       IN product.supplier_id%TYPE,
+        p_group_id          IN product.group_id%TYPE,
+        p_product_name      IN product.product_name%TYPE,
+        p_available_number  IN product.available_number%TYPE,
+        p_status            IN product.status%TYPE,
+        p_price             IN product.price%TYPE,
+        p_shipment_duration IN product.shipment_duration%TYPE,
+        p_weight            IN product.weight%TYPE,
+        p_width             IN product.width%TYPE,
+        p_color             IN product.color%TYPE,
+        p_height            IN product.height%TYPE
+    ) AS
+        l_count NUMBER;
+    BEGIN
+-- Check if product already exists
+        SELECT
+            COUNT(*)
+        INTO l_count
+        FROM
+            product
+        WHERE
+            product_id = p_product_id;
+
+        IF l_count > 0 THEN
     -- Update available_number if product exists
+            UPDATE product
+            SET
+                available_number = available_number + p_available_number
+            WHERE
+                product_id = p_product_id;
+
+            dbms_output.put_line('Product already exists, available number updated.');
+            COMMIT;
+        ELSE
+    -- Insert new product into the table
+            INSERT INTO product (
+                product_id,
+                review_id,
+                supplier_id,
+                group_id,
+                product_name,
+                available_number,
+                status,
+                price,
+                shipment_duration,
+                weight,
+                width,
+                color,
+                height
+            ) VALUES (
+                p_product_id,
+                p_review_id,
+                p_supplier_id,
+                p_group_id,
+                p_product_name,
+                p_available_number,
+                p_status,
+                p_price,
+                p_shipment_duration,
+                p_weight,
+                p_width,
+                p_color,
+                p_height
+            );
+
+            dbms_output.put_line('New product created successfully.');
+            COMMIT;
+        END IF;
+
+    EXCEPTION
+-- Handle exceptions
+        WHEN OTHERS THEN
+            ROLLBACK;
+            dbms_output.put_line('Errors: '
+                                 || sqlcode
+                                 || ' - '
+                                 || sqlerrm);
+    END insert_product;
+
+    PROCEDURE update_product (
+        p_product_id        IN product.product_id%TYPE,
+        p_review_id         IN product.review_id%TYPE,
+        p_supplier_id       IN product.supplier_id%TYPE,
+        p_group_id          IN product.group_id%TYPE,
+        p_product_name      IN product.product_name%TYPE,
+        p_available_number  IN product.available_number%TYPE,
+        p_status            IN product.status%TYPE,
+        p_price             IN product.price%TYPE,
+        p_shipment_duration IN product.shipment_duration%TYPE,
+        p_weight            IN product.weight%TYPE,
+        p_width             IN product.width%TYPE,
+        p_color             IN product.color%TYPE,
+        p_height            IN product.height%TYPE
+    ) AS
+    BEGIN
         UPDATE product
         SET
-            available_number = available_number + p_available_number
+            review_id = p_review_id,
+            supplier_id = p_supplier_id,
+            group_id = p_group_id,
+            product_name = p_product_name,
+            available_number = p_available_number,
+            status = p_status,
+            price = p_price,
+            shipment_duration = p_shipment_duration,
+            weight = p_weight,
+            width = p_width,
+            color = p_color,
+            height = p_height
         WHERE
             product_id = p_product_id;
 
-        dbms_output.put_line('Product already exists, available number updated.');
         COMMIT;
-    ELSE
-    -- Insert new product into the table
-        INSERT INTO product (
-            product_id,
-            review_id,
-            supplier_id,
-            group_id,
-            product_name,
-            available_number,
-            status,
-            price,
-            shipment_duration,
-            weight,
-            width,
-            color,
-            height
-        ) VALUES (
-            p_product_id,
-            p_review_id,
-            p_supplier_id,
-            p_group_id,
-            p_product_name,
-            p_available_number,
-            p_status,
-            p_price,
-            p_shipment_duration,
-            p_weight,
-            p_width,
-            p_color,
-            p_height
-        );
-
-        dbms_output.put_line('New product created successfully.');
-        COMMIT;
-    END IF;
-
-EXCEPTION
--- Handle exceptions
-    WHEN OTHERS THEN
-        ROLLBACK;
-        dbms_output.put_line('Errors: '
-                             || sqlcode
-                             || ' - '
-                             || sqlerrm);
-END insert_product;
-
-PROCEDURE update_product (
-    p_product_id        IN product.product_id%TYPE,
-    p_review_id         IN product.review_id%TYPE,
-    p_supplier_id       IN product.supplier_id%TYPE,
-    p_group_id          IN product.group_id%TYPE,
-    p_product_name      IN product.product_name%TYPE,
-    p_available_number  IN product.available_number%TYPE,
-    p_status            IN product.status%TYPE,
-    p_price             IN product.price%TYPE,
-    p_shipment_duration IN product.shipment_duration%TYPE,
-    p_weight            IN product.weight%TYPE,
-    p_width             IN product.width%TYPE,
-    p_color             IN product.color%TYPE,
-    p_height            IN product.height%TYPE
-) AS
-BEGIN
-    UPDATE product
-    SET
-        review_id = p_review_id,
-        supplier_id = p_supplier_id,
-        group_id = p_group_id,
-        product_name = p_product_name,
-        available_number = p_available_number,
-        status = p_status,
-        price = p_price,
-        shipment_duration = p_shipment_duration,
-        weight = p_weight,
-        width = p_width,
-        color = p_color,
-        height = p_height
-    WHERE
-        product_id = p_product_id;
-
-    COMMIT;
-    dbms_output.put_line('Product with ID '
-                         || p_product_id
-                         || ' updated successfully.');
-EXCEPTION
-    WHEN no_data_found THEN
         dbms_output.put_line('Product with ID '
                              || p_product_id
-                             || ' not found.');
-    WHEN OTHERS THEN
-        ROLLBACK;
-        dbms_output.put_line('Error updating product with ID '
-                             || p_product_id
-                             || '.');
-END update_product;
+                             || ' updated successfully.');
+    EXCEPTION
+        WHEN no_data_found THEN
+            dbms_output.put_line('Product with ID '
+                                 || p_product_id
+                                 || ' not found.');
+        WHEN OTHERS THEN
+            ROLLBACK;
+            dbms_output.put_line('Error updating product with ID '
+                                 || p_product_id
+                                 || '.');
+    END update_product;
 
-PROCEDURE delete_product (
-    p_product_id in product.product_id%TYPE
-) IS v_count NUMBER;
-BEGIN
--- Check if p_product_id is null
-    IF p_product_id IS NULL THEN
-        raise_application_error(-20002, 'Product ID is null');
-    END IF;
+    PROCEDURE delete_product (
+        p_product_id IN product.product_id%TYPE
+    ) IS
+        v_count NUMBER;
+    BEGIN
+    -- Check if p_product_id is null
+        IF p_product_id IS NULL THEN
+            raise_application_error(-20002, 'Product ID is null');
+        END IF;
 
--- Check if product exists
-    SELECT
-        COUNT(*)
-    INTO v_count
-    FROM
-        product
-    WHERE
-        product_id = p_product_id;
-
-    IF v_count = 0 THEN
--- Raise an exception if product does not exist
-        raise_application_error(-20001, 'Product does not exist');
-    ELSE
--- Delete the product
-        DELETE FROM product
+    -- Check if product exists
+        SELECT
+            COUNT(*)
+        INTO v_count
+        FROM
+            product
         WHERE
             product_id = p_product_id;
-        dbms_output.put_line('Product deleted successfully');
-    END IF;
 
-EXCEPTION
-    WHEN OTHERS THEN
--- Handle any other exceptions
-        dbms_output.put_line('Error deleting product: ' || p_product_id || 'with error message' || sqlerrm);
-END delete_product;
+        IF v_count = 0 THEN
+        -- Raise an exception if product does not exist
+            raise_application_error(-20001, 'Product does not exist');
+        ELSE
+        -- Check if there are any reviews associated with the product
+            SELECT
+                COUNT(*)
+            INTO v_count
+            FROM
+                reviews
+            WHERE
+                product_id = p_product_id;
+
+            IF v_count > 0 THEN
+            -- Set the product_id to NULL in the reviews table
+                UPDATE reviews
+                SET
+                    product_id = NULL
+                WHERE
+                    product_id = p_product_id;
+
+                dbms_output.put_line('Associated reviews updated successfully');
+            END IF;
+
+        -- Delete the product
+            DELETE FROM product
+            WHERE
+                product_id = p_product_id;
+
+            dbms_output.put_line('Product deleted successfully');
+        END IF;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+        -- Handle any other exceptions
+            dbms_output.put_line('Error deleting product: '
+                                 || p_product_id
+                                 || ' with error message '
+                                 || sqlerrm);
+    END delete_product;
 
     PROCEDURE update_product_quantity (
         p_product_id IN NUMBER,
@@ -1548,7 +1654,6 @@ END delete_product;
     END;
 
 END product_package;
-
 /
 
 
