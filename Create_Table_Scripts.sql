@@ -4091,6 +4091,47 @@ BEGIN
 	RETURN review_descrip;
 END;
 /
+
+**************** Graph Queries ***********************
+
+** Total Products Sold **
+SELECT product_name, SUM(op.quantity) AS total_quantity_sold 
+FROM product p
+JOIN order_product op ON p.product_id = op.product_id
+GROUP BY product_name 
+ORDER BY total_quantity_sold DESC;
+
+** Total Revenue Per Products **
+SELECT p.product_name, SUM(op.quantity * p.price) AS total_revenue
+  FROM product p
+  JOIN order_product op ON p.product_id = op.product_id
+  JOIN payment pa ON op.payment_id = pa.payment_id
+  WHERE pa.order_date >= ADD_MONTHS(SYSDATE, -12)
+  GROUP BY p.product_name
+  ORDER BY total_revenue DESC;
+  
+** Top Trending Products **
+SELECT *
+FROM (
+  SELECT p.product_name, SUM(op.quantity) AS total_quantity_sold
+  FROM product p
+  JOIN order_product op ON p.product_id = op.product_id
+  JOIN payment pa ON op.payment_id = pa.payment_id
+  WHERE pa.order_date >= ADD_MONTHS(SYSDATE, -12)
+  GROUP BY p.product_name
+  ORDER BY total_quantity_sold DESC
+) 
+WHERE ROWNUM <=5;
+
+** Top Customers **
+SELECT c.first_name, SUM(pa.amount_paid) AS total_spent 
+FROM customer c 
+JOIN payment pa ON c.customer_id = pa.customer_id
+WHERE pa.amount_paid >=20
+GROUP BY first_name 
+ORDER BY total_spent DESC;
+
+******************************************************************
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
 --grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
