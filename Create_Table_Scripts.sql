@@ -654,6 +654,14 @@ EXCEPTION
                              || sqlerrm);
 END;
 
+EXECUTE create_newcustomer(p_customer_id => 1001, p_first_name => 'John', p_last_name => 'Doe', p_email_id => 'johndoe@example.com', p_phone_number => '5551234767', p_customer_type => 'Student');
+
+EXECUTE update_customers(p_customer_id => 1001, p_first_name => 'John', p_last_name => 'Smith', p_email_id => 'johnsmith@example.com', p_phone_number => '555-4321', p_customer_type => 'VIP');
+
+BEGIN
+    delete_customer(p_customer_id => 1001); -- Replace 1 with a valid customer ID
+END;
+/
 -- ********************************UPDATE CUSTOMERS*******************************************
 
 CREATE OR REPLACE PROCEDURE update_customers (
