@@ -1036,6 +1036,51 @@ END;
 /
 
 
+
+--modified delete product
+create or replace PROCEDURE delete_product (
+    p_product_id IN product.product_id%TYPE
+) IS
+    v_count NUMBER;
+BEGIN
+    -- Check if p_product_id is null
+    IF p_product_id IS NULL THEN
+        raise_application_error(-20002, 'Product ID is null');
+    END IF;
+
+    -- Check if product exists
+    SELECT COUNT(*)
+    INTO v_count
+    FROM product
+    WHERE product_id = p_product_id;
+
+    IF v_count = 0 THEN
+        -- Raise an exception if product does not exist
+        raise_application_error(-20001, 'Product does not exist');
+    ELSE
+        -- Check if there are any reviews associated with the product
+        SELECT COUNT(*)
+        INTO v_count
+        FROM reviews
+        WHERE product_id = p_product_id;
+
+        IF v_count > 0 THEN
+            -- Set the product_id to NULL in the reviews table
+            UPDATE reviews SET product_id = NULL WHERE product_id = p_product_id;
+            dbms_output.put_line('Associated reviews updated successfully');
+        END IF;
+
+        -- Delete the product
+        DELETE FROM product WHERE product_id = p_product_id;
+        dbms_output.put_line('Product deleted successfully');
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle any other exceptions
+        dbms_output.put_line('Error deleting product: ' || p_product_id || ' with error message ' || sqlerrm);
+END;
+
 -- stored procedure to add reviews
 create or replace PROCEDURE add_review(
     p_quality_rating IN Reviews.quality_rating%TYPE,
