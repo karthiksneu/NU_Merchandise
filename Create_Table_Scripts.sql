@@ -2998,8 +2998,10 @@ EXCEPTION
                              || sqlcode
                              || ' - '
                              || sqlerrm);
+
 END create_newcustomer;
 /
+
 -- ********************************UPDATE CUSTOMERS*******************************************
 
 CREATE OR REPLACE PROCEDURE update_customers (
@@ -4064,6 +4066,19 @@ END update_product_with_latest_review;
 /
 
 -- ******************* FUNCTIONS ****************************
+
+CREATE OR REPLACE FUNCTION review(product_name in VARCHAR)
+RETURN VARCHAR
+IS
+	review_descrip varchar(120);
+BEGIN
+    select r.review_desc into review_descrip from reviews r JOIN product p on p.review_id = r.review_id AND p.product_name = product_name;
+	dbms_output.put_line(review_descrip);
+ 
+	RETURN review_descrip;
+END;
+
+******************* FUNCTIONS ****************************
 
 CREATE OR REPLACE FUNCTION review(product_name in VARCHAR)
 RETURN VARCHAR
