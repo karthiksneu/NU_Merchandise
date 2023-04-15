@@ -1692,6 +1692,19 @@ COMPOUND TRIGGER
 
 END update_product_with_latest_review;
 
+******************* FUNCTIONS ****************************
+
+CREATE OR REPLACE FUNCTION review(product_name in VARCHAR)
+RETURN VARCHAR
+IS
+	review_descrip varchar(120);
+BEGIN
+    select r.review_desc into review_descrip from reviews r JOIN product p on p.review_id = r.review_id AND p.product_name = product_name;
+	dbms_output.put_line(review_descrip);
+ 
+	RETURN review_descrip;
+END;
+
 --grant select on CUSTOMER_ORDER_HISTORY to Customer , NU_MERCHANDISE_ADMIN;
 --grant select on CUSTOMER_VIEW to NU_MERCHANDISE_ADMIN;
 --grant select on EMPLOYEE_CUSTOMER_COUNT_VIEW to NU_MERCHANDISE_ADMIN;
