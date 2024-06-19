@@ -1,19 +1,59 @@
+
 # NU_Merchandise
 
-1.	OVERVIEW 
+## Overview
 
-The goal of this project is to build a database for NU retail merchandise store where customers can buy products both online and offline. By analyzing the product sales, customers, and employees in their organization, NU retail merchandise store administrators can improve their sales. Through our project, we can design a unique database that holds information about the business model and allows for proper storage and analysis of that information. The products listed are of high quality and have minimal defects. As a result, the merchandise store can maintain superior quality products in their store and increase sales consequently. Our project allows the organization to store data and analyze information about its customers, employees, and products. In addition to analyzing the top-rated products by customers, the database design also helps analyzing total revenue earned online and offline. 
+NU_Merchandise aims to develop a comprehensive retail management system for NU's retail merchandise store. The project focuses on building a robust database that facilitates both online and offline sales of high-quality products. By analyzing product sales, customer behavior, and employee performance, administrators can make informed decisions to enhance sales and customer satisfaction. The database design ensures efficient storage and analysis of business-critical information, enabling insights into top-rated products, revenue management, and quality control.
 
-2. OBJECTIVES 
- 
-Our aim is to develop a retail management system that examines the organization's overall sales, client base, and workforce. 
-1.	Order management: This system will record all orders that enter and leave the store. The top-selling items, the products that have just been added, the number of available products and what to order next. 
-2.	Customer Service: This system will help determine which products have received the highest and lowest customer ratings  
-3.	Revenue management: It will monitor the revenue generated both offline and online. 
-4.	Quality control: The product list will provide the smallest number of defects and the highest amount of quality, which will assist to maintain high-quality products and boost total sales. 
- 
- Steps to be followed:
+## Objectives
 
-1. Execute "Create_Table_Scripts.sql" file as admin with oracle autonomous database.
-2. Execute "Create_Table_Scripts.sql" as "NU_MERCHANDISE_ADMIN" with password "Oracledb2023"
+The key objectives of NU_Merchandise are:
 
+- **Order Management:** Record and manage all incoming and outgoing orders. Analyze top-selling items, track newly added products, monitor stock levels, and optimize inventory management.
+
+- **Customer Service:** Evaluate customer ratings to identify highly rated products and areas for improvement. Enhance customer satisfaction by focusing on product quality and customer preferences.
+
+- **Revenue Management:** Monitor and analyze revenue generated from both online and offline channels. Gain insights into sales trends, peak periods, and revenue growth opportunities.
+
+- **Quality Control:** Ensure product quality by tracking defects and maintaining high standards. Optimize product offerings to align with customer expectations and increase overall sales.
+
+## Steps to Get Started
+
+To set up and deploy NU_Merchandise, follow these steps:
+
+### Prerequisites
+
+- Ensure you have access to an Oracle Autonomous Database instance.
+- Install SQL Developer or any preferred SQL client for executing scripts.
+
+### Setup Instructions
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/yourusername/NU_Merchandise.git
+   cd NU_Merchandise
+   ```
+
+2. **Execute SQL Scripts:**
+   - Open SQL Developer or your SQL client.
+   - Connect to your Oracle Autonomous Database instance using credentials for user `NU_MERCHANDISE_ADMIN`.
+   - Execute the `Create_Table_Scripts.sql` script located in the repository.
+     ```sql
+     @Create_Table_Scripts.sql
+     ```
+   - Use the following credentials when prompted:
+     - **Username:** `NU_MERCHANDISE_ADMIN`
+     - **Password:** `Oracledb2023`
+
+3. **Configure Database Connection:**
+   - Update your application configuration files (`config.js`, `application.properties`, etc.) with the database connection details for `NU_MERCHANDISE_ADMIN`.
+
+4. **Run the Application:**
+   - Deploy and run the application using your preferred web server (Node.js, Tomcat, etc.).
+   - Navigate to the application URL to access NU_Merchandise.
+
+### Additional Notes
+
+- Customize the database schema and application configuration to suit your specific environment and requirements.
+- Ensure proper security measures are implemented for database access and application deployment.
+- Refer to the project documentation for detailed API endpoints, database schema, and application functionalities.
